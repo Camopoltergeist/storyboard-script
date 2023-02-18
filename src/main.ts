@@ -1,4 +1,4 @@
-import { Scene, OrthographicCamera, WebGLRenderer } from "three";
+import { Scene, OrthographicCamera, WebGLRenderer, Color } from "three";
 
 const renderer = new WebGLRenderer({
 	alpha: true,
@@ -24,3 +24,9 @@ let resizeObserver = new ResizeObserver((entries, observer) => {
 resizeObserver.observe(renderer.domElement, { box: "device-pixel-content-box" });
 
 document.body.appendChild(renderer.domElement);
+
+function step(time: DOMHighResTimeStamp){
+	renderer.render(scene, camera);
+}
+
+renderer.setAnimationLoop(step);
