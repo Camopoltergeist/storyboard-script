@@ -1,6 +1,6 @@
 import { Camera, Vector2, Vector3 } from "three";
 
-export class Keyframe{
+export class SBKeyframe{
 	time: number;
 	position: Vector2;
 	rotation: number;
@@ -31,7 +31,7 @@ export class Keyframe{
 		const scale = sbStart.distanceTo(sbEnd) / lineTextureLength;
 		const rotation = sbEnd.sub(sbStart).angle();
 
-		return new Keyframe(time, sbStart, rotation, scale);
+		return new SBKeyframe(time, sbStart, rotation, scale);
 	}
 }
 

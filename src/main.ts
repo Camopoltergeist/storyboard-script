@@ -1,5 +1,5 @@
 import { Scene, WebGLRenderer, LineBasicMaterial, PerspectiveCamera, LineSegments, BufferGeometry, Vector3, Euler, Camera, Vector2 } from "three";
-import { Keyframe } from "./keyframe";
+import { SBKeyframe } from "./sbkeyframe";
 
 const renderer = new WebGLRenderer({
 	alpha: true,
@@ -81,7 +81,7 @@ function step(time: DOMHighResTimeStamp){
 
 camera.updateWorldMatrix(false, false);
 
-function createSBCode(currentKeyframe: Keyframe, nextKeyframe: Keyframe){
+function createSBCode(currentKeyframe: SBKeyframe, nextKeyframe: SBKeyframe){
 	const retString =
 	` M,0,${currentKeyframe.time},${nextKeyframe.time},${currentKeyframe.position.x.toPrecision(7)},${currentKeyframe.position.y.toPrecision(7)},${nextKeyframe.position.x.toPrecision(7)},${nextKeyframe.position.y.toPrecision(7)}\n` + 
 	` R,0,${currentKeyframe.time},${nextKeyframe.time},${currentKeyframe.rotation.toPrecision(7)},${nextKeyframe.rotation.toPrecision(7)}\n` +
@@ -121,7 +121,7 @@ function generateStoryboard(frameRate: number = 30, frameCount: number = 3600){
 		const mLineStart = lineStart.clone().applyMatrix4(cube.matrixWorld);
 		const mLineEnd = lineEnd.clone().applyMatrix4(cube.matrixWorld);
 
-		const kf = Keyframe.fromLine(camera, time, mLineStart, mLineEnd);
+		const kf = SBKeyframe.fromLine(camera, time, mLineStart, mLineEnd);
 
 		keyframes.push(kf);
 	}
