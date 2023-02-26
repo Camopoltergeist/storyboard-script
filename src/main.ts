@@ -81,28 +81,6 @@ function step(time: DOMHighResTimeStamp){
 
 camera.updateWorldMatrix(false, false);
 
-const sbHeight = 480;
-const sbWidth = 16 / 9 * sbHeight;
-const sbLeft = (640 - sbWidth) / 2;
-
-function sbLineKF(camera: Camera, time: number, lineStart: Vector3, lineEnd: Vector3) {
-	const vpMat = camera.projectionMatrix.clone().multiply(camera.matrixWorldInverse);
-
-	const projStart = lineStart.clone().applyMatrix4(vpMat);
-	const projEnd = lineEnd.clone().applyMatrix4(vpMat);
-
-	const v2Start = new Vector2(projStart.x, projStart.y);
-	const v2End = new Vector2(projEnd.x, projEnd.y);
-
-	const sbStart = ndcToSbc(v2Start);
-	const sbEnd = ndcToSbc(v2End);
-
-	const scale = sbStart.distanceTo(sbEnd) / 128;
-	const rotation = sbEnd.sub(sbStart).angle();
-
-	return new Keyframe(time, sbStart, rotation, scale);
-}
-
 function createSBCode(currentKeyframe: Keyframe, nextKeyframe: Keyframe){
 	const retString =
 	` M,0,${currentKeyframe.time},${nextKeyframe.time},${currentKeyframe.position.x.toPrecision(7)},${currentKeyframe.position.y.toPrecision(7)},${nextKeyframe.position.x.toPrecision(7)},${nextKeyframe.position.y.toPrecision(7)}\n` + 
@@ -143,7 +121,7 @@ function generateStoryboard(frameRate: number = 30, frameCount: number = 3600){
 		const mLineStart = lineStart.clone().applyMatrix4(cube.matrixWorld);
 		const mLineEnd = lineEnd.clone().applyMatrix4(cube.matrixWorld);
 
-		const kf = sbLineKF(camera, time, mLineStart, mLineEnd);
+		const kf = Keyframe.fromLine(camera, time, mLineStart, mLineEnd);
 
 		keyframes.push(kf);
 	}
@@ -160,13 +138,7 @@ function generateStoryboard(frameRate: number = 30, frameCount: number = 3600){
 	console.log(sbString);
 }
 
-// Normalized device coordinates to Storyboard coordinates
-function ndcToSbc(input: Vector2): Vector2{
-	const x = (input.x + 1) / 2 * sbWidth + sbLeft;
-	const y = (1 - (input.y + 1) / 2) * sbHeight;
 
-	return new Vector2(x, y)
-}
 
 generateStoryboard(30, 3600);
 
