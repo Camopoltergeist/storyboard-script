@@ -85,7 +85,7 @@ function step(time: number){
 }
 
 async function generateStoryboard(){
-	const endTime = 120000;
+	const endTime = 123452;
 	const frameRate = 30;
 	let frame = 0;
 
@@ -99,7 +99,7 @@ async function generateStoryboard(){
 		step(time);
 	}
 
-	let sbString = "[Events]\n" + sbCube.toSBString() + "\n\n";
+	let sbString = "[Events]\n" + sbCube.toSBString() + "\n";
 
 	console.log(sbString);
 }

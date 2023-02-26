@@ -52,8 +52,8 @@ export class SBMesh{
 		}
 		else{
 			const posIndex = childIndex * 2;
-			const startIndex = geometry.index.array[posIndex];
-			const endIndex = geometry.index.array[posIndex + 1];
+			const startIndex = geometry.index.array[posIndex] * 3;
+			const endIndex = geometry.index.array[posIndex + 1] * 3;
 
 			const startX = posArray[startIndex + 0];
 			const startY = posArray[startIndex + 1];
