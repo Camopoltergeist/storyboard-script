@@ -35,9 +35,29 @@ export class SBKeyframe{
 	}
 
 	toSBString(nextKeyframe: SBKeyframe): string{
+		let nextRotation = nextKeyframe.rotation;
+
+		// Choose shortest rotation path.
+		// Raw value rotation path.
+		const rot1 = Math.abs(nextKeyframe.rotation - this.rotation);
+		// Rotation path, which crosses over the 0 rotation point.
+		const rot2 = Math.PI * 2 - Math.abs(nextKeyframe.rotation - this.rotation);
+
+		// Fix spinny lines.
+		if(rot2 < rot1){
+			const clockwise = nextKeyframe.rotation > this.rotation;
+
+			if(clockwise){
+				nextRotation = nextKeyframe.rotation - Math.PI * 2;
+			}
+			else{
+				nextRotation = nextKeyframe.rotation + Math.PI * 2;
+			}
+		}
+
 		const retString =
 		` M,0,${this.time},${nextKeyframe.time},${this.position.x},${this.position.y},${nextKeyframe.position.x},${nextKeyframe.position.y}\n` + 
-		` R,0,${this.time},${nextKeyframe.time},${this.rotation},${nextKeyframe.rotation}\n` +
+		` R,0,${this.time},${nextKeyframe.time},${this.rotation},${nextRotation}\n` +
 		` V,0,${this.time},${nextKeyframe.time},${this.length},1,${nextKeyframe.length},1\n`;
 
 		return retString;
