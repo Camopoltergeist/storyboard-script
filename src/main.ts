@@ -1,5 +1,6 @@
 import { Scene, WebGLRenderer, LineBasicMaterial, PerspectiveCamera, LineSegments, BufferGeometry, Vector3, Euler, Camera, Vector2 } from "three";
 import { SBKeyframe } from "./sbkeyframe";
+import { SBMesh } from "./sbmesh";
 
 const renderer = new WebGLRenderer({
 	alpha: true,
@@ -68,7 +69,9 @@ function getBoxLines(): BufferGeometry{
 const cube = new LineSegments(getBoxLines(), new LineBasicMaterial());
 scene.add(cube);
 
-function step(time: DOMHighResTimeStamp){
+const sbCube = new SBMesh(cube, "line.png");
+
+function step(time: number){
 	const nSin = (Math.sin(time / 1000) + 1) * Math.PI;
 	const nCos = (Math.cos(time / 1000) + 1) * Math.PI;
 
@@ -77,69 +80,28 @@ function step(time: DOMHighResTimeStamp){
 	cube.setRotationFromEuler(rot);
 
 	renderer.render(scene, camera);
+
+	sbCube.generateKeyframes(camera, time);
 }
 
-camera.updateWorldMatrix(false, false);
+async function generateStoryboard(){
+	const endTime = 120000;
+	const frameRate = 30;
+	let frame = 0;
 
-function createSBCode(currentKeyframe: SBKeyframe, nextKeyframe: SBKeyframe){
-	const retString =
-	` M,0,${currentKeyframe.time},${nextKeyframe.time},${currentKeyframe.position.x.toPrecision(7)},${currentKeyframe.position.y.toPrecision(7)},${nextKeyframe.position.x.toPrecision(7)},${nextKeyframe.position.y.toPrecision(7)}\n` + 
-	` R,0,${currentKeyframe.time},${nextKeyframe.time},${currentKeyframe.rotation.toPrecision(7)},${nextKeyframe.rotation.toPrecision(7)}\n` +
-	` V,0,${currentKeyframe.time},${nextKeyframe.time},${currentKeyframe.length.toPrecision(7)},1,${nextKeyframe.length.toPrecision(7)},1\n`;
+	while(true){
+		const time = Math.round(1000 / frameRate * frame++);
 
-	return retString;
-}
+		if(time > endTime){
+			break;
+		}
 
-function generateStoryboard(frameRate: number = 30, frameCount: number = 3600){
-	const keyframes = [];
-	const geometry = cube.geometry;
-
-	const posArr = (geometry.attributes.position as any).array;
-
-	const startX = posArr[0];
-	const startY = posArr[1];
-	const startZ = posArr[2];
-
-	const endX = posArr[3];
-	const endY = posArr[4];
-	const endZ = posArr[5];
-
-	const lineStart = new Vector3(startX, startY, startZ);
-	const lineEnd = new Vector3(endX, endY, endZ);
-	
-	for(let frame = 0; frame < frameCount; frame++){
-		const time = Math.round(1000 / frameRate * frame);
-
-		const nSin = (Math.sin(time / 1000) + 1) * Math.PI;
-		const nCos = (Math.cos(time / 1000) + 1) * Math.PI;
-
-		const rot = new Euler(nSin, 0, nCos)
-
-		cube.setRotationFromEuler(rot);
-		cube.updateMatrixWorld();
-
-		const mLineStart = lineStart.clone().applyMatrix4(cube.matrixWorld);
-		const mLineEnd = lineEnd.clone().applyMatrix4(cube.matrixWorld);
-
-		const kf = SBKeyframe.fromLine(camera, time, mLineStart, mLineEnd);
-
-		keyframes.push(kf);
+		step(time);
 	}
 
-	let sbString = `Sprite,4,CentreLeft,"line.png",0,0\n`;
-
-	for(let frame = 0; frame < frameCount - 1; frame++){
-		const currentKf = keyframes[frame];
-		const nextKf = keyframes[frame + 1];
-
-		sbString += createSBCode(currentKf, nextKf);
-	}
+	let sbString = "[Events]\n" + sbCube.toSBString() + "\n\n";
 
 	console.log(sbString);
 }
 
-
-
-generateStoryboard(30, 3600);
-
-renderer.setAnimationLoop(step);
+generateStoryboard();

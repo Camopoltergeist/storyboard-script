@@ -7,4 +7,22 @@ export class SBObject{
 	constructor(textureName: string){
 		this.textureName = textureName;
 	}
+
+	toSBString(): string{
+		if(this.keyframes.length < 2){
+			return "";
+		}
+
+		const firstKf = this.keyframes[0];
+		let ret = `Sprite,4,2,"${this.textureName}",${firstKf.position.x},${firstKf.position.y}\n`;
+
+		for(let i = 0; i < this.keyframes.length - 1; i++){
+			const kf = this.keyframes[i];
+			const nextKf = this.keyframes[i + 1];
+
+			ret += kf.toSBString(nextKf);
+		}
+
+		return ret;
+	}
 }

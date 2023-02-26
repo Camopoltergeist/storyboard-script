@@ -1,12 +1,12 @@
-import { Camera, Matrix4, Mesh, Vector3 } from "three";
+import { Camera, LineSegments, Matrix4, Mesh, Vector3 } from "three";
 import { SBKeyframe } from "./sbkeyframe";
 import { SBObject } from "./sbobject";
 
 export class SBMesh{
-	readonly mesh: Mesh;
+	readonly mesh: Mesh | LineSegments;
 	readonly children: SBObject[] = [];
 
-	constructor(mesh: Mesh, textureName: string) {
+	constructor(mesh: Mesh | LineSegments, textureName: string) {
 		this.mesh = mesh;
 
 		const geometry = mesh.geometry;
@@ -21,13 +21,13 @@ export class SBMesh{
 		}
 	}
 
-	generateKeyframes(camera: Camera, time: number, worldMatrix: Matrix4){
+	generateKeyframes(camera: Camera, time: number){
 		for(let i = 0; i < this.children.length; i++){
-			this.generateKeyframe(camera, time, worldMatrix, i);
+			this.generateKeyframe(camera, time, i);
 		}
 	}
 
-	private generateKeyframe(camera: Camera, time: number, worldMatrix: Matrix4, childIndex: number){
+	private generateKeyframe(camera: Camera, time: number, childIndex: number){
 		const child = this.children[childIndex];
 		const geometry = this.mesh.geometry;
 
@@ -67,10 +67,20 @@ export class SBMesh{
 			lineEnd = new Vector3(endX, endY, endZ);
 		}
 
-		lineStart.applyMatrix4(worldMatrix);
-		lineEnd.applyMatrix4(worldMatrix);
+		lineStart.applyMatrix4(this.mesh.matrixWorld);
+		lineEnd.applyMatrix4(this.mesh.matrixWorld);
 
 		const kf = SBKeyframe.fromLine(camera, time, lineStart, lineEnd);
 		child.keyframes.push(kf);
+	}
+
+	toSBString(): string{
+		let ret = "";
+
+		for(const child of this.children){
+			ret += child.toSBString();
+		}
+
+		return ret;
 	}
 }
