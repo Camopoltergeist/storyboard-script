@@ -56,9 +56,9 @@ export class SBKeyframe{
 		}
 
 		const retString =
-		` M,0,${this.time},${nextKeyframe.time},${this.position.x},${this.position.y},${nextKeyframe.position.x},${nextKeyframe.position.y}\n` + 
-		` R,0,${this.time},${nextKeyframe.time},${this.rotation},${nextRotation}\n` +
-		` V,0,${this.time},${nextKeyframe.time},${this.length},1,${nextKeyframe.length},1\n`;
+		` M,0,${this.time},${nextKeyframe.time},${this.position.x.toFixed(2)},${this.position.y.toFixed(2)},${nextKeyframe.position.x.toFixed(2)},${nextKeyframe.position.y.toFixed(2)}\n` + 
+		` R,0,${this.time},${nextKeyframe.time},${this.rotation.toFixed(4)},${nextRotation.toFixed(4)}\n` +
+		` V,0,${this.time},${nextKeyframe.time},${this.length.toFixed(4)},1,${nextKeyframe.length.toFixed(4)},1\n`;
 
 		return retString;
 	}
