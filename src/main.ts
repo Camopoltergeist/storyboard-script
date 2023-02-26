@@ -1,5 +1,5 @@
-import { Scene, OrthographicCamera, WebGLRenderer, Color, Mesh, BoxGeometry, LineBasicMaterial, MeshBasicMaterial, Line, PerspectiveCamera, LineSegments, BufferGeometry, Vector3, Quaternion, Euler, Matrix4, Camera, Vector2, BufferAttribute } from "three";
-import { degToRad, radToDeg } from "three/src/math/MathUtils";
+import { Scene, WebGLRenderer, LineBasicMaterial, PerspectiveCamera, LineSegments, BufferGeometry, Vector3, Euler, Camera, Vector2 } from "three";
+import { Keyframe } from "./keyframe";
 
 const renderer = new WebGLRenderer({
 	alpha: true,
@@ -81,20 +81,6 @@ function step(time: DOMHighResTimeStamp){
 
 camera.updateWorldMatrix(false, false);
 
-class LineKeyframe{
-	time: number;
-	position: Vector2;
-	rotation: number;
-	length: number;
-
-	constructor(time: number, pos: Vector2, rot: number, length: number){
-		this.time = time;
-		this.position = pos;
-		this.rotation = rot;
-		this.length = length;
-	}
-}
-
 const sbHeight = 480;
 const sbWidth = 16 / 9 * sbHeight;
 const sbLeft = (640 - sbWidth) / 2;
@@ -114,10 +100,10 @@ function sbLineKF(camera: Camera, time: number, lineStart: Vector3, lineEnd: Vec
 	const scale = sbStart.distanceTo(sbEnd) / 128;
 	const rotation = sbEnd.sub(sbStart).angle();
 
-	return new LineKeyframe(time, sbStart, rotation, scale);
+	return new Keyframe(time, sbStart, rotation, scale);
 }
 
-function createSBCode(currentKeyframe: LineKeyframe, nextKeyframe: LineKeyframe){
+function createSBCode(currentKeyframe: Keyframe, nextKeyframe: Keyframe){
 	const retString =
 	` M,0,${currentKeyframe.time},${nextKeyframe.time},${currentKeyframe.position.x.toPrecision(7)},${currentKeyframe.position.y.toPrecision(7)},${nextKeyframe.position.x.toPrecision(7)},${nextKeyframe.position.y.toPrecision(7)}\n` + 
 	` R,0,${currentKeyframe.time},${nextKeyframe.time},${currentKeyframe.rotation.toPrecision(7)},${nextKeyframe.rotation.toPrecision(7)}\n` +
