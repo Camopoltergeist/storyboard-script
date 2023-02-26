@@ -33,6 +33,15 @@ export class SBKeyframe{
 
 		return new SBKeyframe(time, sbStart, rotation, scale);
 	}
+
+	toSBString(nextKeyframe: SBKeyframe): string{
+		const retString =
+		` M,0,${this.time},${nextKeyframe.time},${this.position.x},${this.position.y},${nextKeyframe.position.x},${nextKeyframe.position.y}\n` + 
+		` R,0,${this.time},${nextKeyframe.time},${this.rotation},${nextKeyframe.rotation}\n` +
+		` V,0,${this.time},${nextKeyframe.time},${this.length},1,${nextKeyframe.length},1\n`;
+
+		return retString;
+	}
 }
 
 const sbAspectRatio = 16 / 9;
