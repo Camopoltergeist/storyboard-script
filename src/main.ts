@@ -86,7 +86,7 @@ function step(time: number){
 
 async function generateStoryboard(){
 	const endTime = 123452;
-	const frameRate = 30;
+	const frameRate = 15;
 	let frame = 0;
 
 	while(true){
