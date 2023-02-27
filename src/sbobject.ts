@@ -14,7 +14,7 @@ export class SBObject{
 		}
 
 		const firstKf = this.keyframes[0];
-		let ret = `Sprite,4,2,"${this.textureName}",${firstKf.position.x},${firstKf.position.y}\n`;
+		let ret = `Sprite,4,2,"${this.textureName}",${firstKf.position.x.toFixed(2)},${firstKf.position.y.toFixed(2)}\n`;
 
 		for(let i = 0; i < this.keyframes.length - 1; i++){
 			const kf = this.keyframes[i];
