@@ -84,6 +84,12 @@ function step(time: number){
 	sbCube.generateKeyframes(camera, time);
 }
 
+const variableString = `[Variables]
+$m= M,0,
+$r= R,0,
+$v= V,0,
+`;
+
 async function generateStoryboard(){
 	const endTime = 123452;
 	const frameRate = 15;
@@ -99,7 +105,7 @@ async function generateStoryboard(){
 		step(time);
 	}
 
-	let sbString = "[Events]\n" + sbCube.toSBString() + "\n";
+	let sbString = variableString + "[Events]\n" + sbCube.toSBString() + "\n";
 
 	console.log(sbString);
 }
