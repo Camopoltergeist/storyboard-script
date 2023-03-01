@@ -41,7 +41,7 @@ export class SBKeyframe{
 		// Raw value rotation path.
 		const rot1 = Math.abs(nextKeyframe.rotation - this.rotation);
 		// Rotation path, which crosses over the 0 rotation point.
-		const rot2 = Math.PI * 2 - Math.abs(nextKeyframe.rotation - this.rotation);
+		const rot2 = Math.PI * 2 - rot1;
 
 		// Fix spinny lines.
 		if(rot2 < rot1){
