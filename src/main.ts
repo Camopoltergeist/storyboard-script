@@ -1,6 +1,7 @@
-import { Scene, WebGLRenderer, LineBasicMaterial, PerspectiveCamera, LineSegments, BufferGeometry, Vector3, Euler, Camera, Vector2 } from "three";
-import { SBKeyframe } from "./sbkeyframe";
+import { Scene, WebGLRenderer, LineBasicMaterial, PerspectiveCamera, LineSegments, BufferGeometry, Vector3, Euler, KeyframeTrack, AnimationClip, AnimationMixer, InterpolateSmooth, Sprite, SpriteMaterial } from "three";
 import { SBMesh } from "./sbmesh";
+
+import { loadNoteTextures } from "./notetextureloader";
 
 const renderer = new WebGLRenderer({
 	alpha: true,
@@ -71,6 +72,39 @@ scene.add(cube);
 
 const sbCube = new SBMesh(cube, "line.png");
 
+const kfTrackX = new KeyframeTrack(`${cube.uuid}.position[x]`, [
+	0, 2, 4
+], [
+	-4, 4, -4
+], InterpolateSmooth);
+
+const kfTrackY = new KeyframeTrack(`${cube.uuid}.position[y]`, [
+	0, 1, 2, 3, 4
+], [
+	-4, 4, -4, 4, -4
+], InterpolateSmooth);
+
+const animationClip = new AnimationClip("testAnim", -1, [kfTrackX, kfTrackY]);
+const animationMixer = new AnimationMixer(cube);
+const animationAction = animationMixer.clipAction(animationClip);
+
+animationAction.play();
+
+let noteTextures;
+
+loadNoteTextures().then((textures) => {
+	noteTextures = textures;
+	renderer.setAnimationLoop(step);
+
+	const noteMaterial = new SpriteMaterial({
+		map: noteTextures[1]
+	});
+	
+	const noteSprite = new Sprite(noteMaterial);
+	
+	scene.add(noteSprite);
+});
+
 function step(time: number){
 	const nSin = (Math.sin(time / 1000) + 1) * Math.PI;
 	const nCos = (Math.cos(time / 1000) + 1) * Math.PI;
@@ -79,9 +113,11 @@ function step(time: number){
 
 	cube.setRotationFromEuler(rot);
 
+	animationMixer.setTime(time / 1000);
+
 	renderer.render(scene, camera);
 
-	sbCube.generateKeyframes(camera, time);
+	// sbCube.generateKeyframes(camera, time);
 }
 
 const variableString = `[Variables]
@@ -110,4 +146,4 @@ async function generateStoryboard(){
 	console.log(sbString);
 }
 
-generateStoryboard();
+// generateStoryboard();
