@@ -1,4 +1,4 @@
-import { Texture, TextureLoader } from "three";
+import { SpriteMaterial, Texture, TextureLoader } from "three";
 
 import receptor from "./resources/receptor.png";
 import note4 from "./resources/red.png";
@@ -16,4 +16,16 @@ export async function loadNoteTextures(): Promise<Texture[]>{
 	];
 
 	return Promise.all(texturePromises);
+}
+
+export function createNoteMaterials(noteTextures: Texture[]): SpriteMaterial[]{
+	const materials = new Array(noteTextures.length);
+	
+	let i = 0;
+
+	for(const texture of noteTextures){
+		materials[i++] = new SpriteMaterial({map: texture});
+	}
+
+	return materials;
 }

@@ -1,7 +1,7 @@
 import { Scene, WebGLRenderer, LineBasicMaterial, PerspectiveCamera, LineSegments, BufferGeometry, Vector3, Euler, KeyframeTrack, AnimationClip, AnimationMixer, InterpolateSmooth, Sprite, SpriteMaterial } from "three";
 import { SBMesh } from "./sbmesh";
 
-import { loadNoteTextures } from "./notetextureloader";
+import { createNoteMaterials, loadNoteTextures } from "./notetextureloader";
 
 const renderer = new WebGLRenderer({
 	alpha: true,
@@ -90,17 +90,12 @@ const animationAction = animationMixer.clipAction(animationClip);
 
 animationAction.play();
 
-let noteTextures;
-
 loadNoteTextures().then((textures) => {
-	noteTextures = textures;
 	renderer.setAnimationLoop(step);
 
-	const noteMaterial = new SpriteMaterial({
-		map: noteTextures[1]
-	});
+	const noteMaterials = createNoteMaterials(textures);
 	
-	const noteSprite = new Sprite(noteMaterial);
+	const noteSprite = new Sprite(noteMaterials[1]);
 	
 	scene.add(noteSprite);
 });
