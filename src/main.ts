@@ -2,6 +2,7 @@ import { Scene, WebGLRenderer, LineBasicMaterial, PerspectiveCamera, LineSegment
 import { SBMesh } from "./sbmesh";
 
 import { createNoteMaterials, loadNoteTextures } from "./notetextureloader";
+import { Playfield } from "./playfield";
 
 const renderer = new WebGLRenderer({
 	alpha: true,
@@ -95,9 +96,16 @@ loadNoteTextures().then((textures) => {
 
 	const noteMaterials = createNoteMaterials(textures);
 	
-	const noteSprite = new Sprite(noteMaterials[1]);
-	
-	scene.add(noteSprite);
+	const playfield = new Playfield(noteMaterials);
+
+	for(let i = 0; i < 1000; i++){
+		const time = i * 250;
+		const lane = i % 4;
+
+		playfield.addNote(lane, time);
+	}
+
+	scene.add(playfield);
 });
 
 function step(time: number){
