@@ -1,4 +1,4 @@
-import { Scene, WebGLRenderer, LineBasicMaterial, PerspectiveCamera, LineSegments, BufferGeometry, Vector3, Euler, KeyframeTrack, AnimationClip, AnimationMixer, InterpolateSmooth, Sprite, SpriteMaterial } from "three";
+import { Scene, WebGLRenderer, LineBasicMaterial, PerspectiveCamera, LineSegments, BufferGeometry, Vector3, Euler } from "three";
 import { SBMesh } from "./sbmesh";
 
 import { createNoteMaterials, loadNoteTextures } from "./notetextureloader";
@@ -73,24 +73,6 @@ scene.add(cube);
 
 const sbCube = new SBMesh(cube, "line.png");
 
-const kfTrackX = new KeyframeTrack(`${cube.uuid}.position[x]`, [
-	0, 2, 4
-], [
-	-4, 4, -4
-], InterpolateSmooth);
-
-const kfTrackY = new KeyframeTrack(`${cube.uuid}.position[y]`, [
-	0, 1, 2, 3, 4
-], [
-	-4, 4, -4, 4, -4
-], InterpolateSmooth);
-
-const animationClip = new AnimationClip("testAnim", -1, [kfTrackX, kfTrackY]);
-const animationMixer = new AnimationMixer(cube);
-const animationAction = animationMixer.clipAction(animationClip);
-
-animationAction.play();
-
 loadNoteTextures().then((textures) => {
 	renderer.setAnimationLoop(step);
 
@@ -115,8 +97,6 @@ function step(time: number){
 	const rot = new Euler(nSin, 0, nCos)
 
 	cube.setRotationFromEuler(rot);
-
-	animationMixer.setTime(time / 1000);
 
 	renderer.render(scene, camera);
 
