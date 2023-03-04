@@ -3,6 +3,7 @@ import { SBMesh } from "./sbmesh";
 
 import { createNoteMaterials, loadNoteTextures } from "./notetextureloader";
 import { Playfield } from "./playfield";
+import { AnimatorNumber, constantPolation, Keyframe, linearPolation } from "./animator";
 
 const renderer = new WebGLRenderer({
 	alpha: true,
@@ -73,6 +74,8 @@ scene.add(cube);
 
 const sbCube = new SBMesh(cube, "line.png");
 
+let animator: any;
+
 loadNoteTextures().then((textures) => {
 	renderer.setAnimationLoop(step);
 
@@ -87,6 +90,14 @@ loadNoteTextures().then((textures) => {
 		playfield.addNote(lane, time);
 	}
 
+	animator = new AnimatorNumber(playfield, "position.x");
+
+	const startKf = new Keyframe<number>(0, -4, linearPolation, constantPolation);
+	const endKf = new Keyframe<number>(1000, 4, linearPolation, constantPolation);
+
+	animator.addKeyframe(startKf);
+	animator.addKeyframe(endKf);
+
 	scene.add(playfield);
 });
 
@@ -97,6 +108,8 @@ function step(time: number){
 	const rot = new Euler(nSin, 0, nCos)
 
 	cube.setRotationFromEuler(rot);
+
+	animator.update(time);
 
 	renderer.render(scene, camera);
 
