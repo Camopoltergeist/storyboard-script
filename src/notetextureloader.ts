@@ -15,7 +15,14 @@ export async function loadNoteTextures(): Promise<Texture[]>{
 		loader.loadAsync(note16)
 	];
 
-	return Promise.all(texturePromises);
+	const textures = await Promise.all(texturePromises);
+
+	textures[0].userData.textureName = "receptor.png";
+	textures[1].userData.textureName = "note4.png";
+	textures[2].userData.textureName = "note8.png";
+	textures[3].userData.textureName = "note16.png";
+
+	return textures;
 }
 
 export function createNoteMaterials(noteTextures: Texture[]): SpriteMaterial[]{
