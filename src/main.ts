@@ -91,6 +91,7 @@ loadNoteTextures().then((textures) => {
 	}
 
 	animator = new AnimatorNumber(playfield, "position.x");
+	animator.loop = true;
 
 	const startKf = new Keyframe<number>(0, -4, linearPolation, constantPolation);
 	const endKf = new Keyframe<number>(1000, 4, linearPolation, constantPolation);

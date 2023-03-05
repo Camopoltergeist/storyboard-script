@@ -3,6 +3,8 @@ export class AnimatorNumber{
 	readonly propertyPath: string[];
 	readonly keyframes: Keyframe<number>[] = [];
 
+	loop: boolean = false;
+
 	private needsSorting = false;
 
 	constructor(target: any, propertyPath: string){
@@ -38,9 +40,13 @@ export class AnimatorNumber{
 	}
 
 	private polate(first: Keyframe<number>, second: Keyframe<number>, time: number){
-		const interpolate = first.time <= time && second.time > time;
+		let t = 1 - (second.time - time) / (second.time - first.time);
 
-		const t = 1 - (second.time - time) / (second.time - first.time);
+		if(this.loop){
+			t = t % 1;
+		}
+
+		const interpolate = t < 1 && t > 0;
 
 		if(interpolate){
 			this.value = first.interpolationFunction(first.value, second.value, t);
