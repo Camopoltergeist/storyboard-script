@@ -77,7 +77,7 @@ const sbCube = new SBMesh(cube, "line.png");
 let animator: any;
 
 loadNoteTextures().then((textures) => {
-	renderer.setAnimationLoop(step);
+	// renderer.setAnimationLoop(step);
 
 	const noteMaterials = createNoteMaterials(textures);
 	
@@ -110,11 +110,11 @@ function step(time: number){
 
 	cube.setRotationFromEuler(rot);
 
-	animator.update(time);
+	// animator.update(time);
 
 	renderer.render(scene, camera);
 
-	// sbCube.generateKeyframes(camera, time);
+	sbCube.generateKeyframes(camera, time);
 }
 
 const variableString = `[Variables]
@@ -143,4 +143,4 @@ async function generateStoryboard(){
 	console.log(sbString);
 }
 
-// generateStoryboard();
+generateStoryboard();
