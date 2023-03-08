@@ -24,7 +24,7 @@ export class Playfield extends Object3D {
 		for(let i = 0; i < this.lanes.length; i++){
 			const lane = this.lanes[i];
 
-			lane.position.x = -halfWidth + i * laneWidth;
+			lane.position.x = -halfWidth + i * laneWidth + laneWidth / 2;
 			this.add(lane);
 		}
 	}
@@ -61,7 +61,7 @@ export class Playfield extends Object3D {
 }
 
 export class Lane extends Object3D{
-	private readonly receptor: Sprite;
+	private readonly receptor: Note;
 	private readonly notes: Note[];
 	private readonly noteMaterials: SpriteMaterial[];
 
@@ -79,17 +79,21 @@ export class Lane extends Object3D{
 		this.noteMaterials = noteMaterialsCopy;
 		this.notes = [];
 
-		this.receptor = new Sprite(this.noteMaterials[0]);
+		this.receptor = new Note(this.noteMaterials[0]);
 		this.add(this.receptor);
 	}
 
 	updateAnimations(time: number){
+		this.receptor.updateAnimations(time);
+
 		for(const note of this.notes){
 			note.updateAnimations(time);
 		}
 	}
 
 	generateKeyframes(camera: Camera, time: number){
+		this.receptor.generateKeyframes(camera, time);
+
 		for(const note of this.notes){
 			note.generateKeyframes(camera, time);
 		}
@@ -110,6 +114,8 @@ export class Lane extends Object3D{
 
 	toSBString(){
 		let ret = "";
+
+		ret += this.receptor.toSBString();
 
 		for(const note of this.notes){
 			ret += note.toSBString();
