@@ -85,6 +85,18 @@ loadNoteTextures().then((textures) => {
 	playfield = new Playfield(noteMaterials);
 	playfield.position.y = -4;
 
+	const playfieldAnimator = new AnimatorNumber(playfield, "position.x");
+	playfieldAnimator.loop = true;
+	playfieldAnimator.addKeyframe(new Keyframe(0, 0, linearPolation, constantPolation));
+	playfieldAnimator.addKeyframe(new Keyframe(200, -1, linearPolation, constantPolation));
+	playfieldAnimator.addKeyframe(new Keyframe(400, 0, linearPolation, constantPolation));
+	playfieldAnimator.addKeyframe(new Keyframe(600, 0, linearPolation, constantPolation));
+	playfieldAnimator.addKeyframe(new Keyframe(800, 1, linearPolation, constantPolation));
+	playfieldAnimator.addKeyframe(new Keyframe(1000, 0, linearPolation, constantPolation));
+	playfieldAnimator.addKeyframe(new Keyframe(1200, 0, linearPolation, constantPolation));
+
+	playfield.animators.push(playfieldAnimator);
+
 	for(const note of noteData){
 		playfield.addNote(note.lane, note.time);
 	}

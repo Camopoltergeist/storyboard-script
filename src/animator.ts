@@ -7,6 +7,10 @@ export class AnimatorNumber{
 
 	private needsSorting = false;
 
+	get length(){
+		return this.keyframes[this.keyframes.length - 1].time;
+	}
+
 	constructor(target: any, propertyPath: string){
 		this.target = target;
 		this.propertyPath = propertyPath.split(".");
@@ -62,6 +66,10 @@ export class AnimatorNumber{
 	}
 
 	private findKeyframes(time: number): { first: Keyframe<number>, second: Keyframe<number> }{
+		if(this.loop){
+			time = time % this.length;
+		}
+
 		if(this.keyframes.length === 2 || this.keyframes[0].time > time){
 			return { 
 				first: this.keyframes[0],

@@ -3,7 +3,8 @@ import { degToRad } from "three/src/math/MathUtils";
 import { AnimatorNumber, constantPolation, Keyframe, linearPolation } from "./animator";
 
 export class Playfield extends Object3D {
-	private lanes: Lane[];
+	private readonly lanes: Lane[];
+	readonly animators: AnimatorNumber[] = [];
 
 	constructor(noteMaterials: SpriteMaterial[], laneWidth = 1){
 		super();
@@ -27,6 +28,10 @@ export class Playfield extends Object3D {
 	}
 
 	updateAnimations(time: number): void {
+		for(const animator of this.animators){
+			animator.update(time);
+		}
+
 		for(const lane of this.lanes){
 			lane.updateAnimations(time);
 		}
