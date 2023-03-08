@@ -4,6 +4,7 @@ import { SBMesh } from "./sbmesh";
 import { createNoteMaterials, loadNoteTextures } from "./notetextureloader";
 import { Playfield } from "./playfield";
 import { AnimatorNumber, constantPolation, Keyframe, linearPolation } from "./animator";
+import noteData from "./murasame.json";
 
 const renderer = new WebGLRenderer({
 	alpha: true,
@@ -74,30 +75,19 @@ scene.add(cube);
 
 const sbCube = new SBMesh(cube, "line.png");
 
-let animator: any;
+let playfield: any;
 
 loadNoteTextures().then((textures) => {
-	// renderer.setAnimationLoop(step);
+	renderer.setAnimationLoop(step);
 
 	const noteMaterials = createNoteMaterials(textures);
 	
-	const playfield = new Playfield(noteMaterials);
+	playfield = new Playfield(noteMaterials);
+	playfield.position.y = -4;
 
-	for(let i = 0; i < 1000; i++){
-		const time = i * 250;
-		const lane = i % 4;
-
-		playfield.addNote(lane, time);
+	for(const note of noteData){
+		playfield.addNote(note.lane, note.time);
 	}
-
-	animator = new AnimatorNumber(playfield, "position.x");
-	animator.loop = true;
-
-	const startKf = new Keyframe<number>(0, -4, linearPolation, constantPolation);
-	const endKf = new Keyframe<number>(1000, 4, linearPolation, constantPolation);
-
-	animator.addKeyframe(startKf);
-	animator.addKeyframe(endKf);
 
 	scene.add(playfield);
 });
@@ -110,11 +100,11 @@ function step(time: number){
 
 	cube.setRotationFromEuler(rot);
 
-	// animator.update(time);
+	playfield.updateAnimations(time);
 
 	renderer.render(scene, camera);
 
-	sbCube.generateKeyframes(camera, time);
+	// sbCube.generateKeyframes(camera, time);
 }
 
 const variableString = `[Variables]
@@ -143,4 +133,4 @@ async function generateStoryboard(){
 	console.log(sbString);
 }
 
-generateStoryboard();
+// generateStoryboard();
