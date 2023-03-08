@@ -40,6 +40,10 @@ export class Playfield extends Object3D {
 	}
 
 	generateKeyframes(camera: Camera, time: number){
+		if(!this.visible){
+			return;
+		}
+
 		for(const lane of this.lanes){
 			lane.generateKeyframes(camera, time);
 		}
@@ -53,6 +57,10 @@ export class Playfield extends Object3D {
 		let ret = "";
 
 		for(const lane of this.lanes){
+			ret += lane.receptor.toSBString();
+		}
+
+		for(const lane of this.lanes){
 			ret += lane.toSBString();
 		}
 
@@ -61,7 +69,7 @@ export class Playfield extends Object3D {
 }
 
 export class Lane extends Object3D{
-	private readonly receptor: Note;
+	readonly receptor: SBSprite;
 	private readonly notes: Note[];
 	private readonly noteMaterials: SpriteMaterial[];
 
@@ -79,7 +87,7 @@ export class Lane extends Object3D{
 		this.noteMaterials = noteMaterialsCopy;
 		this.notes = [];
 
-		this.receptor = new Note(this.noteMaterials[0]);
+		this.receptor = new SBSprite(this.noteMaterials[0]);
 		this.add(this.receptor);
 	}
 
@@ -87,11 +95,16 @@ export class Lane extends Object3D{
 		this.receptor.updateAnimations(time);
 
 		for(const note of this.notes){
+			note.updateVisibility(time);
 			note.updateAnimations(time);
 		}
 	}
 
 	generateKeyframes(camera: Camera, time: number){
+		if(!this.visible){
+			return;
+		}
+
 		this.receptor.generateKeyframes(camera, time);
 
 		for(const note of this.notes){
@@ -100,10 +113,10 @@ export class Lane extends Object3D{
 	}
 
 	addNote(time: number){
-		const noteSprite = new Note(this.noteMaterials[1]);
+		const noteSprite = new Note(this.noteMaterials[1], time);
 		const animator = new AnimatorNumber(noteSprite, "position.y");
 
-		animator.addKeyframe(new Keyframe(time - 1000, 10, linearPolation, constantPolation));
+		animator.addKeyframe(new Keyframe(time - 1000, 5, linearPolation, constantPolation));
 		animator.addKeyframe(new Keyframe(time, 0, linearPolation, linearPolation));
 
 		noteSprite.animators.push(animator);
@@ -115,8 +128,6 @@ export class Lane extends Object3D{
 	toSBString(){
 		let ret = "";
 
-		ret += this.receptor.toSBString();
-
 		for(const note of this.notes){
 			ret += note.toSBString();
 		}
@@ -125,14 +136,14 @@ export class Lane extends Object3D{
 	}
 }
 
-class Note extends Sprite{
+class SBSprite extends Sprite{
 	readonly animators: AnimatorNumber[] = [];
-	readonly sbNote: SBObject;
+	readonly sbObject: SBObject;
 
 	constructor(material: SpriteMaterial){
 		super(material);
 
-		this.sbNote = new SBObject(this.material.map?.userData.textureName, true);
+		this.sbObject = new SBObject(this.material.map?.userData.textureName, true);
 	}
 
 	updateAnimations(time: number): void {
@@ -142,12 +153,35 @@ class Note extends Sprite{
 	}
 
 	generateKeyframes(camera: Camera, time: number){
+		if(!this.visible){
+			return;
+		}
+
 		const kf = SBKeyframe.fromSprite(camera, time, this);
 
-		this.sbNote.keyframes.push(kf);
+		this.sbObject.keyframes.push(kf);
 	}
 
 	toSBString(): string{
-		return this.sbNote.toSBString();
+		return this.sbObject.toSBString();
+	}
+}
+
+class Note extends SBSprite{
+	readonly time: number;
+
+	constructor(material: SpriteMaterial, time: number){
+		super(material);
+
+		this.time = time;
+	}
+
+	updateVisibility(currentTime: number){
+		if(currentTime < this.time - 1000 || currentTime > this.time){
+			this.visible = false;
+		}
+		else{
+			this.visible = true;
+		}
 	}
 }

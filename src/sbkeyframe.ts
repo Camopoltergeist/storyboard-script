@@ -195,7 +195,7 @@ export class SBScale implements Cullable{
 
 	static genSBString(current: SBScale, next: SBScale): string{
 		if(current.scaleBoth){
-			return ` S,0,${current.time},${next.time},${current.scale.toFixed(4)},${next.scale.toFixed(4)}\n`;
+			return `$s${current.time},${next.time},${current.scale.toFixed(4)},${next.scale.toFixed(4)}\n`;
 		}
 
 		return `$v${current.time},${next.time},${current.scale.toFixed(4)},1,${next.scale.toFixed(4)},1\n`;

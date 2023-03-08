@@ -143,6 +143,7 @@ const variableString = `[Variables]
 $m= M,0,
 $r= R,0,
 $v= V,0,
+$s= S,0,
 `;
 
 async function generateStoryboard(){

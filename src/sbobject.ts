@@ -76,9 +76,7 @@ function cullFrames(frameArr: Cullable[], threshold: number): Cullable[]{
 		ret.push(current);
 	}
 
-	if(ret.length < 2){
-		ret.push(frameArr[frameArr.length - 1]);
-	}
+	ret.push(frameArr[frameArr.length - 1]);
 
 	return ret;
 }
