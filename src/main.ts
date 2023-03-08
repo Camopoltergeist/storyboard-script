@@ -70,20 +70,21 @@ function getBoxLines(): BufferGeometry{
 	return geometry;
 }
 
-const cube = new LineSegments(getBoxLines(), new LineBasicMaterial());
-scene.add(cube);
+// const cube = new LineSegments(getBoxLines(), new LineBasicMaterial());
+// scene.add(cube);
 
-const sbCube = new SBMesh(cube, "line.png");
+// const sbCube = new SBMesh(cube, "line.png");
 
 let playfield: any;
 
 loadNoteTextures().then((textures) => {
-	renderer.setAnimationLoop(step);
+	// renderer.setAnimationLoop(step);
 
 	const noteMaterials = createNoteMaterials(textures);
 	
 	playfield = new Playfield(noteMaterials);
 	playfield.position.y = -4;
+	playfield.position.z = 1;
 
 	const playfieldAnimator = new AnimatorNumber(playfield, "position.x");
 	playfieldAnimator.loop = true;
@@ -102,19 +103,31 @@ loadNoteTextures().then((textures) => {
 	}
 
 	scene.add(playfield);
+
+	generateStoryboard();
 });
 
 function step(time: number){
-	const nSin = (Math.sin(time / 1000) + 1) * Math.PI;
-	const nCos = (Math.cos(time / 1000) + 1) * Math.PI;
+	// const nSin = (Math.sin(time / 1000) + 1) * Math.PI;
+	// const nCos = (Math.cos(time / 1000) + 1) * Math.PI;
 
-	const rot = new Euler(nSin, 0, nCos)
+	// const rot = new Euler(nSin, 0, nCos)
 
-	cube.setRotationFromEuler(rot);
+	// cube.setRotationFromEuler(rot);
 
-	playfield.updateAnimations(time);
+	for(const c of scene.children){
+		const child = c as any;
+
+		child.updateAnimations(time);
+	}
 
 	renderer.render(scene, camera);
+
+	for(const c of scene.children){
+		const child = c as any;
+
+		child.generateKeyframes(camera, time);
+	}
 
 	// sbCube.generateKeyframes(camera, time);
 }
@@ -140,9 +153,15 @@ async function generateStoryboard(){
 		step(time);
 	}
 
-	let sbString = variableString + "[Events]\n" + sbCube.toSBString() + "\n";
+	let sbString = variableString + "[Events]\n";
+
+	for(const c of scene.children){
+		const child = c as any;
+
+		sbString += child.toSBString();
+	}
+
+	sbString += "\n";
 
 	console.log(sbString);
 }
-
-// generateStoryboard();

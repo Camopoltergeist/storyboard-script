@@ -4,9 +4,11 @@ import { Cullable, SBKeyframe, SBPosition, SBRotation, SBScale } from "./sbkeyfr
 export class SBObject{
 	readonly textureName: string;
 	readonly keyframes: SBKeyframe[] = [];
+	readonly center: boolean;
 
-	constructor(textureName: string){
+	constructor(textureName: string, center: boolean){
 		this.textureName = textureName;
+		this.center = center;
 	}
 
 	toSBString(): string{
@@ -31,7 +33,7 @@ export class SBObject{
 		scaleFrames = cullFrames(scaleFrames, 0.005) as SBScale[];
 
 		const firstKf = posFrames[0];
-		let ret = `Sprite,4,2,"${this.textureName}",${firstKf.position.x.toFixed(2)},${firstKf.position.y.toFixed(2)}\n`;
+		let ret = `Sprite,4,${this.center ? "1" : "2"},"${this.textureName}",${firstKf.position.x.toFixed(2)},${firstKf.position.y.toFixed(2)}\n`;
 
 		for(let i = 0; i < posFrames.length - 1; i++){
 			const kf = posFrames[i];
@@ -72,6 +74,10 @@ function cullFrames(frameArr: Cullable[], threshold: number): Cullable[]{
 		}
 
 		ret.push(current);
+	}
+
+	if(ret.length < 2){
+		ret.push(frameArr[frameArr.length - 1]);
 	}
 
 	return ret;

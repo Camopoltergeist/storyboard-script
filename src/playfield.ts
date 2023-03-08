@@ -1,6 +1,8 @@
-import { Object3D, Sprite, SpriteMaterial } from "three";
+import { Camera, Object3D, Sprite, SpriteMaterial } from "three";
 import { degToRad } from "three/src/math/MathUtils";
 import { AnimatorNumber, constantPolation, Keyframe, linearPolation } from "./animator";
+import { SBKeyframe } from "./sbkeyframe";
+import { SBObject } from "./sbobject";
 
 export class Playfield extends Object3D {
 	private readonly lanes: Lane[];
@@ -37,8 +39,24 @@ export class Playfield extends Object3D {
 		}
 	}
 
+	generateKeyframes(camera: Camera, time: number){
+		for(const lane of this.lanes){
+			lane.generateKeyframes(camera, time);
+		}
+	}
+
 	addNote(lane: number, time: number){
 		this.lanes[lane].addNote(time);
+	}
+
+	toSBString(){
+		let ret = "";
+
+		for(const lane of this.lanes){
+			ret += lane.toSBString();
+		}
+
+		return ret;
 	}
 }
 
@@ -71,6 +89,12 @@ export class Lane extends Object3D{
 		}
 	}
 
+	generateKeyframes(camera: Camera, time: number){
+		for(const note of this.notes){
+			note.generateKeyframes(camera, time);
+		}
+	}
+
 	addNote(time: number){
 		const noteSprite = new Note(this.noteMaterials[1]);
 		const animator = new AnimatorNumber(noteSprite, "position.y");
@@ -83,18 +107,41 @@ export class Lane extends Object3D{
 		this.notes.push(noteSprite);
 		this.add(noteSprite);
 	}
+
+	toSBString(){
+		let ret = "";
+
+		for(const note of this.notes){
+			ret += note.toSBString();
+		}
+
+		return ret;
+	}
 }
 
 class Note extends Sprite{
 	readonly animators: AnimatorNumber[] = [];
+	readonly sbNote: SBObject;
 
 	constructor(material: SpriteMaterial){
 		super(material);
+
+		this.sbNote = new SBObject(this.material.map?.userData.textureName, true);
 	}
 
 	updateAnimations(time: number): void {
 		for(const animator of this.animators){
 			animator.update(time);
 		}
+	}
+
+	generateKeyframes(camera: Camera, time: number){
+		const kf = SBKeyframe.fromSprite(camera, time, this);
+
+		this.sbNote.keyframes.push(kf);
+	}
+
+	toSBString(): string{
+		return this.sbNote.toSBString();
 	}
 }

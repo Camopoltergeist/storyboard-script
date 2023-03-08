@@ -1,4 +1,4 @@
-import { Camera, LineSegments, Matrix4, Mesh, Vector3 } from "three";
+import { Camera, LineSegments, Mesh, Vector3 } from "three";
 import { SBKeyframe } from "./sbkeyframe";
 import { SBObject } from "./sbobject";
 
@@ -17,7 +17,7 @@ export class SBMesh{
 		}
 
 		for(let i = 0; i < vertexCount; i += 2){
-			this.children.push(new SBObject(textureName));
+			this.children.push(new SBObject(textureName, false));
 		}
 	}
 

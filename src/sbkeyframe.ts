@@ -1,4 +1,4 @@
-import { Camera, Vector2, Vector3 } from "three";
+import { Camera, Sprite, Vector2, Vector3 } from "three";
 import { inverseLerp, lerp } from "three/src/math/MathUtils";
 
 export class SBKeyframe{
@@ -6,33 +6,51 @@ export class SBKeyframe{
 	position: Vector2;
 	rotation: number;
 	scale: number;
+	scaleBoth: boolean;
 
-	constructor(time: number, pos: Vector2, rot: number, scale: number){
+	constructor(time: number, pos: Vector2, rot: number, scale: number, scaleBoth: boolean){
 		this.time = time;
 		this.position = pos;
 		this.rotation = rot;
 		this.scale = scale;
+		this.scaleBoth = scaleBoth;
+	}
+
+	private static projectToStoryboard(camera: Camera, point: Vector3): Vector2{
+		const vpMat = camera.projectionMatrix.clone().multiply(camera.matrixWorldInverse);
+
+		// Do projection
+		const projectedPoint = point.clone().applyMatrix4(vpMat);
+
+		// Convert to Vector2
+		const v2ProjectedPoint = new Vector2(projectedPoint.x, projectedPoint.y);
+
+		// Do normalized device coordinate to storyboard coordinate conversion
+		const sbPoint = ndcToSbc(v2ProjectedPoint);
+
+		return sbPoint;
 	}
 
 	static fromLine(camera: Camera, time: number, lineStart: Vector3, lineEnd: Vector3, lineTextureLength: number = 128){
-		const vpMat = camera.projectionMatrix.clone().multiply(camera.matrixWorldInverse);
-
-		// Do projections
-		const projStart = lineStart.clone().applyMatrix4(vpMat);
-		const projEnd = lineEnd.clone().applyMatrix4(vpMat);
-
-		// Convert to Vector2
-		const v2Start = new Vector2(projStart.x, projStart.y);
-		const v2End = new Vector2(projEnd.x, projEnd.y);
-
-		// Do normalized device coordinate to storyboard coordinate conversion
-		const sbStart = ndcToSbc(v2Start);
-		const sbEnd = ndcToSbc(v2End);
+		const sbStart = this.projectToStoryboard(camera, lineStart);
+		const sbEnd = this.projectToStoryboard(camera, lineEnd);
 
 		const scale = sbStart.distanceTo(sbEnd) / lineTextureLength;
 		const rotation = sbEnd.sub(sbStart).angle();
 
-		return new SBKeyframe(time, sbStart, rotation, scale);
+		return new SBKeyframe(time, sbStart, rotation, scale, false);
+	}
+	
+	static fromSprite(camera: Camera, time: number, sprite: Sprite){
+		const worldPos = sprite.position.clone().applyMatrix4(sprite.matrixWorld);
+
+		const sbCoord = this.projectToStoryboard(camera, worldPos);
+
+		// TODO: Figure out scale calculation
+		const scale = 0.1;
+		const rotation = sprite.material.rotation;
+
+		return new SBKeyframe(time, sbCoord, rotation, scale, true);
 	}
 
 	toSBString(nextKeyframe: SBKeyframe): string{
@@ -67,7 +85,7 @@ export class SBKeyframe{
 	split(): { pos: SBPosition, rot: SBRotation, scale: SBScale }{
 		const pos = new SBPosition(this.time, this.position);
 		const rot = new SBRotation(this.time, this.rotation);
-		const scale = new SBScale(this.time, this.scale);
+		const scale = new SBScale(this.time, this.scale, this.scaleBoth);
 
 		return { pos, rot, scale };
 	}
@@ -160,10 +178,12 @@ export class SBRotation implements Cullable{
 export class SBScale implements Cullable{
 	time: number;
 	scale: number;
+	scaleBoth: boolean;
 
-	constructor(time: number, scale: number){
+	constructor(time: number, scale: number, scaleBoth: boolean){
 		this.time = time;
 		this.scale = scale;
+		this.scaleBoth = scaleBoth;
 	}
 
 	cullable(previous: SBScale, next: SBScale, threshold: number): boolean{
@@ -174,6 +194,10 @@ export class SBScale implements Cullable{
 	}
 
 	static genSBString(current: SBScale, next: SBScale): string{
+		if(current.scaleBoth){
+			return ` S,0,${current.time},${next.time},${current.scale.toFixed(4)},${next.scale.toFixed(4)}\n`;
+		}
+
 		return `$v${current.time},${next.time},${current.scale.toFixed(4)},1,${next.scale.toFixed(4)},1\n`;
 	}
 }
