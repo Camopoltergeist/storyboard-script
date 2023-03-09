@@ -1,5 +1,6 @@
 import { Camera, Sprite, Vector2, Vector3 } from "three";
 import { inverseLerp, lerp } from "three/src/math/MathUtils";
+import { SBSprite } from "./sbable";
 
 export class SBKeyframe{
 	time: number;
@@ -41,8 +42,10 @@ export class SBKeyframe{
 		return new SBKeyframe(time, sbStart, rotation, scale, false);
 	}
 	
-	static fromSprite(camera: Camera, time: number, sprite: Sprite){
-		const worldPos = sprite.position.clone().applyMatrix4(sprite.matrixWorld);
+	static fromSprite(camera: Camera, time: number, sprite: SBSprite){
+		// const worldPos = sprite.position.clone().applyMatrix4(sprite.matrixWorld);
+		const worldPos =  new Vector3();
+		sprite.getWorldPosition(worldPos);
 
 		const sbCoord = this.projectToStoryboard(camera, worldPos);
 
