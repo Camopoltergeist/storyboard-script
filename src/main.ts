@@ -1,9 +1,7 @@
-import { Scene, WebGLRenderer, LineBasicMaterial, PerspectiveCamera, LineSegments, BufferGeometry, Vector3, Euler } from "three";
-import { SBMesh } from "./sbmesh";
+import { Scene, WebGLRenderer, PerspectiveCamera, BufferGeometry, Vector3, Euler } from "three";
 
 import { createNoteMaterials, loadNoteTextures } from "./notetextureloader";
 import { Playfield } from "./playfield";
-import { AnimatorNumber, constantPolation, Keyframe, linearPolation } from "./animator";
 import noteData from "./murasame.json";
 
 const renderer = new WebGLRenderer({
