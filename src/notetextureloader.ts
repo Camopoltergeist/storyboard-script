@@ -1,9 +1,9 @@
 import { SpriteMaterial, Texture, TextureLoader } from "three";
 
 import receptor from "./resources/receptor.png";
-import note4 from "./resources/red.png";
-import note8 from "./resources/blue.png";
-import note16 from "./resources/green.png";
+import note4 from "./resources/note4.png";
+import note8 from "./resources/note8.png";
+import note16 from "./resources/note16.png";
 
 export async function loadNoteTextures(): Promise<Texture[]>{
 	const loader = new TextureLoader();

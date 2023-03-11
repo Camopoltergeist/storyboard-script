@@ -33,8 +33,8 @@ export class SBLane extends SBSprite{
 		}
 	}
 
-	addNote(time: number){
-		const noteSprite = new SBNote(this.noteMaterials[1], time);
+	addNote(time: number, snap: number){
+		const noteSprite = new SBNote(this.noteMaterials[snap], time);
 		noteSprite.createDefaultNoteAnimation();
 
 		this.notes.push(noteSprite);

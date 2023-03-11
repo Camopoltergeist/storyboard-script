@@ -36,8 +36,8 @@ export class Playfield extends Object3D implements SBAble{
 		}
 	}
 
-	addNote(lane: number, time: number){
-		this.lanes[lane].addNote(time);
+	addNote(lane: number, time: number, snap: number){
+		this.lanes[lane].addNote(time, snap);
 	}
 
 	toSBString(){

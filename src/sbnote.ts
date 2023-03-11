@@ -21,6 +21,7 @@ export class SBNote extends SBSprite{
 	}
 
 	createDefaultNoteAnimation(){
+		// This has to be set to false or the notes will stay visible after the final keyframe for some reason.
 		this.visible = false;
 
 		const scaledTime = this.time / 1000;

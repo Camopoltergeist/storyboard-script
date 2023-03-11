@@ -1,5 +1,6 @@
 import { Camera, Scene, WebGLRenderer } from "three";
 import { inverseLerp } from "three/src/math/MathUtils";
+import { updateAnimations } from "./animations";
 import { SBAble } from "./sbable";
 
 const variableString = `[Variables]
@@ -15,13 +16,12 @@ export function* generateStoryboard(renderer: WebGLRenderer, scene: Scene, camer
 	let currentTime = Math.round(startTime);
 
 	while(currentTime < endTime){
-		// TODO: Update animations
+		updateAnimations(currentTime);
 
 		// Render call is the easiest way to make sure all world matrises are up to date
 		renderer.render(scene, camera);
 
 		for(const child of scene.children as SBAble[]){
-			(child as any).updateAnimations(currentTime);
 			child.generateKeyframes(camera, currentTime);
 		}
 

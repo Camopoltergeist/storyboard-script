@@ -35,7 +35,7 @@ document.body.appendChild(renderer.domElement);
 let playfield: any;
 
 loadNoteTextures().then((textures) => {
-	renderer.setAnimationLoop(step);
+	// renderer.setAnimationLoop(step);
 
 	const noteMaterials = createNoteMaterials(textures);
 	
@@ -44,12 +44,12 @@ loadNoteTextures().then((textures) => {
 	playfield.position.z = 1;
 
 	for(const note of noteData){
-		playfield.addNote(note.lane, note.time);
+		playfield.addNote(note.lane, note.time, note.snap);
 	}
 
 	scene.add(playfield);
 
-	return;
+	// return;
 
 	const sbGen = generateStoryboard(renderer, scene, camera, 15, 123452, 0);
 
