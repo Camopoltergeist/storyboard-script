@@ -6,7 +6,9 @@ export class SBNote extends SBSprite{
 	readonly time: number;
 
 	constructor(material: SpriteMaterial, time: number){
-		super(material);
+		const materialCopy = material.clone();
+
+		super(materialCopy);
 
 		this.time = time;
 	}
@@ -30,8 +32,13 @@ export class SBNote extends SBSprite{
 
 		const noteMovementTrack = new NumberKeyframeTrack(".position[y]", [kfStart, kfEnd], [5, 0]);
 		const noteVisibilityTrack = new BooleanKeyframeTrack(".visible", [kfStart, kfStart, kfEnd], [false, true, false]);
-		const animationClip = new AnimationClip("note", -1, [noteMovementTrack, noteVisibilityTrack]);
+		const noteClip = new AnimationClip("note", -1, [noteMovementTrack, noteVisibilityTrack]);
 
-		addAnimation(animationClip, this);
+		addAnimation(noteClip, this);
+
+		const noteOpacityTrack = new NumberKeyframeTrack(`.opacity`, [kfStart, kfStart + 0.1], [0.0, 1.0]);
+		const materialClip = new AnimationClip("noteMaterial", -1, [noteOpacityTrack]);
+
+		addAnimation(materialClip, this.material);
 	}
 }

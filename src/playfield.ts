@@ -5,7 +5,7 @@ import { SBLane } from "./sblane";
 export class Playfield extends Object3D implements SBAble{
 	private readonly lanes: SBLane[];
 
-	constructor(noteMaterials: SpriteMaterial[], laneWidth = 1){
+	constructor(noteMaterials: SpriteMaterial[], laneWidth = 0.9){
 		super();
 
 		this.lanes = [

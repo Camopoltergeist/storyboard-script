@@ -1,8 +1,8 @@
-import { AnimationClip, AnimationMixer, LoopOnce, Object3D } from "three";
+import { AnimationClip, AnimationMixer, AnimationObjectGroup, LoopOnce, Object3D, Texture } from "three";
 
 const animationMixers: AnimationMixer[] = [];
 
-export function addAnimation(animationClip: AnimationClip, target: Object3D){
+export function addAnimation(animationClip: AnimationClip, target: any){
 	const mixer = new AnimationMixer(target);
 	const action = mixer.clipAction(animationClip);
 
