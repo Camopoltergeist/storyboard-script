@@ -4,6 +4,7 @@ import { createNoteMaterials, loadNoteTextures } from "./notetextureloader";
 import { Playfield } from "./playfield";
 import noteData from "./murasame.json";
 import { generateStoryboard } from "./storyboard";
+import { updateAnimations } from "./animations";
 
 const renderer = new WebGLRenderer({
 	alpha: true,
@@ -34,7 +35,7 @@ document.body.appendChild(renderer.domElement);
 let playfield: any;
 
 loadNoteTextures().then((textures) => {
-	// renderer.setAnimationLoop(step);
+	renderer.setAnimationLoop(step);
 
 	const noteMaterials = createNoteMaterials(textures);
 	
@@ -47,6 +48,8 @@ loadNoteTextures().then((textures) => {
 	}
 
 	scene.add(playfield);
+
+	return;
 
 	const sbGen = generateStoryboard(renderer, scene, camera, 15, 123452, 0);
 
@@ -63,14 +66,10 @@ loadNoteTextures().then((textures) => {
 });
 
 function step(time: number){
-	for(const c of scene.children){
-		const child = c as any;
-		
-		child.updateAnimations(time);
-	}
+	updateAnimations(time);
 	
-	const rot = new Euler(0, time / 1000 * Math.PI * 2, 0);
-	playfield.setRotationFromEuler(rot);
+	// const rot = new Euler(0, time / 1000 * Math.PI * 2, 0);
+	// playfield.setRotationFromEuler(rot);
 
 	renderer.render(scene, camera);
 }

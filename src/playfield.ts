@@ -1,11 +1,9 @@
 import { Camera, Object3D, SpriteMaterial } from "three";
-import { AnimatorNumber } from "./animator";
 import { SBAble } from "./sbable";
 import { SBLane } from "./sblane";
 
 export class Playfield extends Object3D implements SBAble{
 	private readonly lanes: SBLane[];
-	readonly animators: AnimatorNumber[] = [];
 
 	constructor(noteMaterials: SpriteMaterial[], laneWidth = 1){
 		super();
@@ -25,16 +23,6 @@ export class Playfield extends Object3D implements SBAble{
 
 			lane.position.x = -halfWidth + i * laneWidth + laneWidth / 2;
 			this.add(lane);
-		}
-	}
-
-	updateAnimations(time: number): void {
-		for(const animator of this.animators){
-			animator.update(time);
-		}
-
-		for(const lane of this.lanes){
-			lane.updateAnimations(time);
 		}
 	}
 

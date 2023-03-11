@@ -1,6 +1,5 @@
 import { Camera, SpriteMaterial } from "three";
 import { degToRad } from "three/src/math/MathUtils";
-import { AnimatorNumber, constantPolation, Keyframe, linearPolation } from "./animator";
 import { SBSprite } from "./sbable";
 import { SBNote } from "./sbnote";
 
@@ -22,15 +21,6 @@ export class SBLane extends SBSprite{
 		this.notes = [];
 	}
 
-	updateAnimations(time: number){
-		super.updateAnimations(time);
-
-		for(const note of this.notes){
-			note.updateVisibility(time);
-			note.updateAnimations(time);
-		}
-	}
-
 	generateKeyframes(camera: Camera, time: number){
 		if(!this.visible){
 			return;
@@ -45,12 +35,7 @@ export class SBLane extends SBSprite{
 
 	addNote(time: number){
 		const noteSprite = new SBNote(this.noteMaterials[1], time);
-		const animator = new AnimatorNumber(noteSprite, "position.y");
-
-		animator.addKeyframe(new Keyframe(time - 1000, 5, linearPolation, constantPolation));
-		animator.addKeyframe(new Keyframe(time, 0, linearPolation, linearPolation));
-
-		noteSprite.animators.push(animator);
+		noteSprite.createDefaultNoteAnimation();
 
 		this.notes.push(noteSprite);
 		this.add(noteSprite);

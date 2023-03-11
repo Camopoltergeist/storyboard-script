@@ -1,4 +1,5 @@
-import { SpriteMaterial } from "three";
+import { AnimationClip, BooleanKeyframeTrack, NumberKeyframeTrack, SpriteMaterial } from "three";
+import { addAnimation } from "./animations";
 import { SBSprite } from "./sbable";
 
 export class SBNote extends SBSprite{
@@ -17,5 +18,19 @@ export class SBNote extends SBSprite{
 		else{
 			this.visible = true;
 		}
+	}
+
+	createDefaultNoteAnimation(){
+		this.visible = false;
+
+		const scaledTime = this.time / 1000;
+		const kfStart = scaledTime - 1;
+		const kfEnd = scaledTime;
+
+		const noteMovementTrack = new NumberKeyframeTrack(".position[y]", [kfStart, kfEnd], [5, 0]);
+		const noteVisibilityTrack = new BooleanKeyframeTrack(".visible", [kfStart, kfStart, kfEnd], [false, true, false]);
+		const animationClip = new AnimationClip("note", -1, [noteMovementTrack, noteVisibilityTrack]);
+
+		addAnimation(animationClip, this);
 	}
 }
