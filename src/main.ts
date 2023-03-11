@@ -3,6 +3,7 @@ import { Scene, WebGLRenderer, PerspectiveCamera, BufferGeometry, Vector3, Euler
 import { createNoteMaterials, loadNoteTextures } from "./notetextureloader";
 import { Playfield } from "./playfield";
 import noteData from "./murasame.json";
+import { generateStoryboard } from "./storyboard";
 
 const renderer = new WebGLRenderer({
 	alpha: true,
@@ -68,11 +69,6 @@ function getBoxLines(): BufferGeometry{
 	return geometry;
 }
 
-// const cube = new LineSegments(getBoxLines(), new LineBasicMaterial());
-// scene.add(cube);
-
-// const sbCube = new SBMesh(cube, "line.png");
-
 let playfield: any;
 
 loadNoteTextures().then((textures) => {
@@ -84,90 +80,35 @@ loadNoteTextures().then((textures) => {
 	playfield.position.y = -4;
 	playfield.position.z = 1;
 
-	// const playfieldAnimator = new AnimatorNumber(playfield, "position.x");
-	// playfieldAnimator.loop = true;
-	// playfieldAnimator.addKeyframe(new Keyframe(0, 0, linearPolation, constantPolation));
-	// playfieldAnimator.addKeyframe(new Keyframe(200, -1, linearPolation, constantPolation));
-	// playfieldAnimator.addKeyframe(new Keyframe(400, 0, linearPolation, constantPolation));
-	// playfieldAnimator.addKeyframe(new Keyframe(600, 0, linearPolation, constantPolation));
-	// playfieldAnimator.addKeyframe(new Keyframe(800, 1, linearPolation, constantPolation));
-	// playfieldAnimator.addKeyframe(new Keyframe(1000, 0, linearPolation, constantPolation));
-	// playfieldAnimator.addKeyframe(new Keyframe(1200, 0, linearPolation, constantPolation));
-
-	// playfield.animators.push(playfieldAnimator);
-
 	for(const note of noteData){
 		playfield.addNote(note.lane, note.time);
 	}
 
 	scene.add(playfield);
 
-	generateStoryboard();
+	const sbGen = generateStoryboard(renderer, scene, camera, 15, 123452, 0);
+
+	while(true){
+		const pogress = sbGen.next();
+
+		if(pogress.done){
+			console.log(pogress.value);
+			break;
+		}
+
+		console.log(pogress.value);
+	}
 });
 
 function step(time: number){
-	// const nSin = (Math.sin(time / 1000) + 1) * Math.PI;
-	// const nCos = (Math.cos(time / 1000) + 1) * Math.PI;
-
-	// const rot = new Euler(nSin, 0, nCos)
-
-	// cube.setRotationFromEuler(rot);
-
-	const rot = new Euler(0, time / 1000 * Math.PI * 2, 0);
-
-	
 	for(const c of scene.children){
 		const child = c as any;
 		
 		child.updateAnimations(time);
 	}
-
+	
+	const rot = new Euler(0, time / 1000 * Math.PI * 2, 0);
 	playfield.setRotationFromEuler(rot);
 
 	renderer.render(scene, camera);
-
-	// return;
-
-	for(const c of scene.children){
-		const child = c as any;
-
-		child.generateKeyframes(camera, time);
-	}
-
-	// sbCube.generateKeyframes(camera, time);
-}
-
-const variableString = `[Variables]
-$m= M,0,
-$r= R,0,
-$v= V,0,
-$s= S,0,
-`;
-
-async function generateStoryboard(){
-	const endTime = 123452;
-	const frameRate = 15;
-	let frame = 0;
-
-	while(true){
-		const time = Math.round(1000 / frameRate * frame++);
-
-		if(time > endTime){
-			break;
-		}
-
-		step(time);
-	}
-
-	let sbString = variableString + "[Events]\n";
-
-	for(const c of scene.children){
-		const child = c as any;
-
-		sbString += child.toSBString();
-	}
-
-	sbString += "\n";
-
-	console.log(sbString);
 }
