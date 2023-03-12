@@ -8,13 +8,15 @@ export class SBKeyframe{
 	rotation: number;
 	scale: number;
 	scaleBoth: boolean;
+	alpha: number;
 
-	constructor(time: number, pos: Vector2, rot: number, scale: number, scaleBoth: boolean){
+	constructor(time: number, pos: Vector2, rot: number, scale: number, scaleBoth: boolean, alpha: number){
 		this.time = time;
 		this.position = pos;
 		this.rotation = rot;
 		this.scale = scale;
 		this.scaleBoth = scaleBoth;
+		this.alpha = alpha;
 	}
 
 	private static projectToStoryboard(camera: Camera, point: Vector3): Vector2{
@@ -32,18 +34,17 @@ export class SBKeyframe{
 		return sbPoint;
 	}
 
-	static fromLine(camera: Camera, time: number, lineStart: Vector3, lineEnd: Vector3, lineTextureLength: number = 128){
+	static fromLine(camera: Camera, time: number, lineStart: Vector3, lineEnd: Vector3, alpha: number, lineTextureLength: number = 128){
 		const sbStart = this.projectToStoryboard(camera, lineStart);
 		const sbEnd = this.projectToStoryboard(camera, lineEnd);
 
 		const scale = sbStart.distanceTo(sbEnd) / lineTextureLength;
 		const rotation = sbEnd.sub(sbStart).angle();
 
-		return new SBKeyframe(time, sbStart, rotation, scale, false);
+		return new SBKeyframe(time, sbStart, rotation, scale, false, alpha);
 	}
 	
 	static fromSprite(camera: Camera, time: number, sprite: SBSprite){
-		// const worldPos = sprite.position.clone().applyMatrix4(sprite.matrixWorld);
 		const worldPos =  new Vector3();
 		sprite.getWorldPosition(worldPos);
 
@@ -53,7 +54,7 @@ export class SBKeyframe{
 		const scale = 0.1;
 		const rotation = sprite.material.rotation;
 
-		return new SBKeyframe(time, sbCoord, rotation, scale, true);
+		return new SBKeyframe(time, sbCoord, rotation, scale, true, sprite.material.opacity);
 	}
 
 	toSBString(nextKeyframe: SBKeyframe): string{
@@ -85,12 +86,13 @@ export class SBKeyframe{
 		return retString;
 	}
 
-	split(): { pos: SBPosition, rot: SBRotation, scale: SBScale }{
+	split(): { pos: SBPosition, rot: SBRotation, scale: SBScale, alpha: SBAlpha }{
 		const pos = new SBPosition(this.time, this.position);
 		const rot = new SBRotation(this.time, this.rotation);
 		const scale = new SBScale(this.time, this.scale, this.scaleBoth);
+		const alpha = new SBAlpha(this.time, this.alpha);
 
-		return { pos, rot, scale };
+		return { pos, rot, scale, alpha };
 	}
 }
 
@@ -202,5 +204,26 @@ export class SBScale implements Cullable{
 		}
 
 		return `$v${current.time},${next.time},${current.scale.toFixed(4)},1,${next.scale.toFixed(4)},1\n`;
+	}
+}
+
+export class SBAlpha implements Cullable{
+	time: number;
+	alpha: number;
+
+	constructor(time: number, alpha: number){
+		this.time = time;
+		this.alpha = alpha;
+	}
+
+	cullable(previous: any, next: any, threshold: number): boolean {
+		const t = inverseLerp(previous.time, next.time, this.time);
+		const lerpedScale = lerp(previous.alpha, next.alpha, t);
+
+		return checkThreshold(this.alpha, lerpedScale, threshold);
+	}
+
+	static genSBString(current: SBAlpha, next: SBAlpha): string{
+		return `$f${current.time},${next.time},${current.alpha.toFixed(3)},${next.alpha.toFixed(3)}\n`;
 	}
 }

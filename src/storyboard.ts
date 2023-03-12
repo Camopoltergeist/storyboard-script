@@ -8,6 +8,7 @@ $m= M,0,
 $r= R,0,
 $v= V,0,
 $s= S,0,
+$f= F,0,
 `;
 
 export function* generateStoryboard(renderer: WebGLRenderer, scene: Scene, camera: Camera, frameRate: number, length: number, startTime: number = 0) {

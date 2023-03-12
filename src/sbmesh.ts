@@ -70,7 +70,7 @@ export class SBMesh{
 		lineStart.applyMatrix4(this.mesh.matrixWorld);
 		lineEnd.applyMatrix4(this.mesh.matrixWorld);
 
-		const kf = SBKeyframe.fromLine(camera, time, lineStart, lineEnd);
+		const kf = SBKeyframe.fromLine(camera, time, lineStart, lineEnd, 1);
 		child.keyframes.push(kf);
 	}
 

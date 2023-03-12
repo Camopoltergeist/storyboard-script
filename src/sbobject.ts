@@ -1,5 +1,5 @@
 import { degToRad } from "three/src/math/MathUtils";
-import { Cullable, SBKeyframe, SBPosition, SBRotation, SBScale } from "./sbkeyframe";
+import { Cullable, SBAlpha, SBKeyframe, SBPosition, SBRotation, SBScale } from "./sbkeyframe";
 
 export class SBObject{
 	readonly textureName: string;
@@ -19,6 +19,7 @@ export class SBObject{
 		let posFrames = [];
 		let rotFrames = [];
 		let scaleFrames = [];
+		let alphaFrames = [];
 
 		for(const kf of this.keyframes){
 			const split = kf.split();
@@ -26,11 +27,13 @@ export class SBObject{
 			posFrames.push(split.pos);
 			rotFrames.push(split.rot);
 			scaleFrames.push(split.scale);
+			alphaFrames.push(split.alpha);
 		}
 
 		posFrames = cullFrames(posFrames, 0.1) as SBPosition[];
 		rotFrames = cullFrames(rotFrames, degToRad(0.1)) as SBRotation[];
 		scaleFrames = cullFrames(scaleFrames, 0.005) as SBScale[];
+		alphaFrames = cullFrames(alphaFrames, 0.001) as SBAlpha[];
 
 		const firstKf = posFrames[0];
 		let ret = `Sprite,4,${this.center ? "1" : "2"},"${this.textureName}",${firstKf.position.x.toFixed(2)},${firstKf.position.y.toFixed(2)}\n`;
@@ -54,6 +57,13 @@ export class SBObject{
 			const nextKf = scaleFrames[i + 1];
 
 			ret += SBScale.genSBString(kf, nextKf);
+		}
+
+		for(let i = 0; i < alphaFrames.length - 1; i++){
+			const kf = alphaFrames[i];
+			const nextKf = alphaFrames[i + 1];
+
+			ret += SBAlpha.genSBString(kf, nextKf);
 		}
 
 		return ret;
