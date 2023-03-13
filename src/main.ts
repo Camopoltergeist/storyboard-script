@@ -24,7 +24,7 @@ const camera = new PerspectiveCamera(57, 16 / 9, 0.01, 1000);
 
 camera.translateZ(10);
 
-let resizeObserver = new ResizeObserver((entries, observer) => {
+const resizeObserver = new ResizeObserver((entries, observer) => {
 	for(const entry of entries){
 		const width = entry.devicePixelContentBoxSize[0].inlineSize;
 		const height = entry.devicePixelContentBoxSize[0].blockSize;

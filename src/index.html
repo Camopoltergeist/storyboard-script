@@ -58,6 +58,9 @@
 
 			.optionContainer{
 				user-select: none;
+				display: flex;
+				flex-direction: column;
+				min-width: 260px;
 			}
 
 			.disableOptions{
@@ -79,21 +82,43 @@
 			#outputContainer{
 				flex-grow: 1;
 			}
+
+			#generateButton{
+				width: 100%;
+				margin: 0;
+			}
+
+			.checkbox{
+				float: right;
+				margin: 2px 0;
+			}
+
+			.optionItem{
+				margin: 2px 0;
+				min-height: 20px;
+			}
+
+			.numberInput{
+				max-width: 60px;
+				float: right;
+				padding: 0;
+			}
 		</style>
 	</head>
 
 	<body>
 		<div id="contentFlexBox">
-			<div style="position: relative;">
-				<div id="dock" class="">
-					<div class="optionContainer dockItem">
-						<input type="checkbox" id="cullKeyframes" checked><label for="cullKeyframes">Cull obsolete keyframes</label><br>
-						<input type="checkbox" id="useVariableCompression" checked><label for="useVariableCompression">Use variables to reduce filesize</label><br>
-						<button id="generateButton">Generate Storyboard</button>
-					</div>
-					<div class="dockItem" id="outputContainer">
-						<div id="storyboardOutput"></div>
-					</div>
+			<div id="dock" class="">
+				<div class="optionContainer dockItem">
+					<div class="optionItem"><label for="startTime">Start Time (ms)</label><input class="numberInput" type="number" id="startTime" value="0"></div>
+					<div class="optionItem"><label for="endTime">End Time (ms)</label><input class="numberInput" type="number" id="endTime" value="0"></div>
+					<div class="optionItem"><label for="frameRate">Frame Rate</label><input class="numberInput" type="number" id="frameRate" value="15"></div>
+					<div class="optionItem"><label for="cullKeyframes">Cull obsolete keyframes</label><input class="checkbox" type="checkbox" id="cullKeyframes" checked></div>
+					<div class="optionItem"><label for="useVariableCompression">Use variables to reduce filesize</label><input class="checkbox" type="checkbox" id="useVariableCompression" checked></div>
+					<div class="optionItem"><button id="generateButton">Generate Storyboard</button></div>
+				</div>
+				<div class="dockItem" id="outputContainer">
+					<div id="storyboardOutput"></div>
 				</div>
 			</div>
 			<div id="canvasContainer">
