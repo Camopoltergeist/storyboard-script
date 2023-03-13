@@ -12,14 +12,108 @@
 				overflow: hidden;
 			}
 
-			canvas{
+			#contentFlexBox{
+				display: flex;
+				flex-direction: column;
+				flex-wrap: nowrap;
 				width: 100vw;
 				height: 100vh;
+			}
+
+			#mainCanvas{
+				display: block;
+				height: 100%;
+				aspect-ratio: 16 / 9;
+				margin: auto;
+			}
+
+			#canvasContainer{
+				flex-grow: 1;
+				background-color: #222;
+			}
+
+			#dock{
+				background-color: #444;
+				height: 300px;
+				flex-basis: auto;
+				color: white;
+				display: flex;
+			}
+
+			.dockHidden{
+				display: none !important;
+			}
+
+			.dockItem{
+				margin: 10px;
+			}
+
+			label{
+				font-family: sans-serif;
+			}
+
+			#generateButton{
+				margin: 4px;
+			}
+
+			.optionContainer{
+				user-select: none;
+				pointer-events: none;
+			}
+
+			#storyboardOutput{
+				background-color: #222;
+				min-width: 200px;
+				height: 100%;
+				border: #AAA 1px solid;
+				user-select: all;
+				white-space: pre;
+				font-family: monospace;
+			}
+
+			#outputContainer{
+				flex-grow: 1;
+			}
+
+			#dockButton{
+				position: absolute;
+				height: 20px;
+				width: auto;
+				background-color: #444;
+				bottom: -20px;
+				left: 0px;
+				overflow: hidden;
+				font-family: sans-serif;
+				color: white;
+				user-select: none;
+			}
+
+			#dockButtonText{
+				margin: 2px;
 			}
 		</style>
 	</head>
 
 	<body>
-		
+		<div id="contentFlexBox">
+			<div style="position: relative;">
+				<div id="dock">
+					<div class="optionContainer dockItem">
+						<input type="checkbox" id="cullKeyframes"><label for="cullKeyframes">Cull obsolete keyframes</label><br>
+						<input type="checkbox" id="useVariableCompression"><label for="useVariableCompression">Use variables to reduce filesize</label><br>
+						<button id="generateButton">Generate Storyboard</button>
+					</div>
+					<div class="dockItem" id="outputContainer">
+						<div id="storyboardOutput">
+							igomåefdoiabnmetio
+						</div>
+					</div>
+				</div>
+				<div id="dockButton"><span id="dockButtonText">Show/Hide Dock</span></div>
+			</div>
+			<div id="canvasContainer">
+				<canvas id="mainCanvas"></canvas>
+			</div>
+		</div>
 	</body>
 </html>

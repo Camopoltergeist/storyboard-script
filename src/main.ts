@@ -6,10 +6,16 @@ import noteData from "./murasame.json";
 import { generateStoryboard } from "./storyboard";
 import { updateAnimations } from "./animations";
 
+const mainCanvas = document.getElementById("mainCanvas") as HTMLCanvasElement | null;
+
+if(mainCanvas === null){
+	throw new Error("Could not find mainCanvas in document!");
+}
+
 const renderer = new WebGLRenderer({
-	alpha: true,
 	antialias: true,
-	powerPreference: "high-performance"
+	powerPreference: "high-performance",
+	canvas: mainCanvas
 });
 
 const scene = new Scene();
@@ -30,12 +36,10 @@ let resizeObserver = new ResizeObserver((entries, observer) => {
 
 resizeObserver.observe(renderer.domElement, { box: "device-pixel-content-box" });
 
-document.body.appendChild(renderer.domElement);
-
 let playfield: any;
 
 loadNoteTextures().then((textures) => {
-	// renderer.setAnimationLoop(step);
+	renderer.setAnimationLoop(step);
 
 	const noteMaterials = createNoteMaterials(textures);
 	
@@ -49,7 +53,7 @@ loadNoteTextures().then((textures) => {
 
 	scene.add(playfield);
 
-	// return;
+	return;
 
 	const sbGen = generateStoryboard(renderer, scene, camera, 15, 123452, 0);
 
