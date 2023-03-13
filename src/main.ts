@@ -1,4 +1,4 @@
-import { Scene, WebGLRenderer, PerspectiveCamera, Euler } from "three";
+import { Scene, WebGLRenderer, PerspectiveCamera } from "three";
 
 import { createNoteMaterials, loadNoteTextures } from "./notetextureloader";
 import { Playfield } from "./playfield";
@@ -6,12 +6,7 @@ import noteData from "./murasame.json";
 import { generateStoryboard } from "./storyboard";
 import { updateAnimations } from "./animations";
 
-const dockButton = document.getElementById("dockButton") as HTMLDivElement;
 const dockElement = document.getElementById("dock") as HTMLDivElement;
-
-dockButton.addEventListener("click", (e) => {
-	dockElement.classList.toggle("dockHidden");
-});
 
 const mainCanvas = document.getElementById("mainCanvas") as HTMLCanvasElement | null;
 
