@@ -58,6 +58,9 @@
 
 			.optionContainer{
 				user-select: none;
+			}
+
+			.disableOptions{
 				pointer-events: none;
 			}
 
@@ -97,16 +100,14 @@
 	<body>
 		<div id="contentFlexBox">
 			<div style="position: relative;">
-				<div id="dock">
+				<div id="dock" class="dockHidden">
 					<div class="optionContainer dockItem">
 						<input type="checkbox" id="cullKeyframes"><label for="cullKeyframes">Cull obsolete keyframes</label><br>
 						<input type="checkbox" id="useVariableCompression"><label for="useVariableCompression">Use variables to reduce filesize</label><br>
 						<button id="generateButton">Generate Storyboard</button>
 					</div>
 					<div class="dockItem" id="outputContainer">
-						<div id="storyboardOutput">
-							igomåefdoiabnmetio
-						</div>
+						<div id="storyboardOutput"></div>
 					</div>
 				</div>
 				<div id="dockButton"><span id="dockButtonText">Show/Hide Dock</span></div>
