@@ -1,4 +1,4 @@
-import { AnimationClip, AnimationMixer, AnimationObjectGroup, LoopOnce, Object3D, Texture } from "three";
+import { AnimationAction, AnimationClip, AnimationMixer, AnimationObjectGroup, LoopOnce, Object3D, Texture } from "three";
 
 const animationMixers: AnimationMixer[] = [];
 
