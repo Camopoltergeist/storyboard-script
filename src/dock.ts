@@ -2,8 +2,18 @@ const cullKeyframesElement = document.getElementById("cullKeyframes") as HTMLInp
 const useVariableCompressionElement = document.getElementById("useVariableCompression") as HTMLInputElement | null;
 const generateButton = document.getElementById("generateButton") as HTMLButtonElement | null;
 const storyboardOutputElement = document.getElementById("storyboardOutput") as HTMLDivElement | null;
+const startTimeElement = document.getElementById("startTime") as HTMLInputElement | null;
+const endTimeElement = document.getElementById("endTime") as HTMLInputElement | null;
+const frameRateElement = document.getElementById("frameRate") as HTMLInputElement | null;
 
-if(cullKeyframesElement === null || useVariableCompressionElement === null || generateButton === null || storyboardOutputElement === null){
+if(cullKeyframesElement === null ||
+	useVariableCompressionElement === null ||
+	generateButton === null ||
+	storyboardOutputElement === null ||
+	startTimeElement === null ||
+	endTimeElement === null ||
+	frameRateElement === null
+	){
 	throw new Error("Could not find option elements in document!");
 }
 
@@ -19,20 +29,66 @@ export function setGenerateListener(eventListener: GenerateListener){
 export interface GenerateOptions{
 	cullKeyframes: boolean;
 	useVariableCompression: boolean;
+	startTime: number;
+	endTime: number;
+	frameRate: number;
 }
 
 function generateListenerWrapper(e: MouseEvent){
 	const cullKeyframes = (cullKeyframesElement as HTMLInputElement).checked;
 	const useVariableCompression = (useVariableCompressionElement as HTMLInputElement).checked;
+	const startTime = Number((startTimeElement as HTMLInputElement).value);
+	const endTime = Number((endTimeElement as HTMLInputElement).value);
+	const frameRate = Number((frameRateElement as HTMLInputElement).value);
 
 	const options = {
 		cullKeyframes,
-		useVariableCompression
-	}
+		useVariableCompression,
+		startTime,
+		endTime,
+		frameRate
+	};
 
+	saveOptions(options);
 	generateListener(options);
 }
 
 export function setOutput(output: string){
 	(storyboardOutputElement as HTMLDivElement).innerText = output;
 }
+
+const defaultOptions: GenerateOptions = {
+	cullKeyframes: true,
+	useVariableCompression: true,
+	startTime: 0,
+	endTime: 0,
+	frameRate: 15
+};
+
+function loadOptions() {
+	const optionsString = localStorage.getItem("generateOptions") as any;
+	
+	let options: Partial<GenerateOptions>;
+
+	try{
+		options = JSON.parse(optionsString);
+	}
+	catch(e){
+		options = {};
+	}
+
+	const assignedOptions = Object.assign(defaultOptions, options);
+
+	(cullKeyframesElement as HTMLInputElement).checked = assignedOptions.cullKeyframes;
+	(useVariableCompressionElement as HTMLInputElement).checked = assignedOptions.useVariableCompression;
+	(startTimeElement as HTMLInputElement).value = String(assignedOptions.startTime);
+	(endTimeElement as HTMLInputElement).value = String(assignedOptions.endTime);
+	(frameRateElement as HTMLInputElement).value = String(assignedOptions.frameRate);
+}
+
+function saveOptions(options: GenerateOptions){
+	const optionsString = JSON.stringify(options);
+	localStorage.setItem("generateOptions", optionsString);
+}
+
+loadOptions();

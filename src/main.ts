@@ -58,7 +58,7 @@ loadNoteTextures().then((textures) => {
 function generateListener(options: GenerateOptions){
 	renderer.setAnimationLoop(null);
 
-	const sbGen = generateStoryboard(renderer, scene, camera, 15, 123452, 0);
+	const sbGen = generateStoryboard(renderer, scene, camera, options);
 
 	while(true){
 		const pogress = sbGen.next();
