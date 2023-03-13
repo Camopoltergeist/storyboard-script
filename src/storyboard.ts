@@ -38,7 +38,7 @@ export function* generateStoryboard(renderer: WebGLRenderer, scene: Scene, camer
 		sbString += child.toSBString();
 	}
 
-	sbString += "\n";
+	sbString += "\n\n";
 
 	return sbString;
 }
