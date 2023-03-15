@@ -1,4 +1,4 @@
-import { Camera, SpriteMaterial } from "three";
+import { SpriteMaterial } from "three";
 import { degToRad } from "three/src/math/MathUtils";
 import { SBSprite } from "./sbable";
 import { SBNote } from "./sbnote";
@@ -21,33 +21,11 @@ export class SBLane extends SBSprite{
 		this.notes = [];
 	}
 
-	generateKeyframes(camera: Camera, time: number){
-		if(!this.visible){
-			return;
-		}
-
-		super.generateKeyframes(camera, time);
-
-		for(const note of this.notes){
-			note.generateKeyframes(camera, time);
-		}
-	}
-
 	addNote(time: number, snap: number){
 		const noteSprite = new SBNote(this.noteMaterials[snap], time);
 		noteSprite.createDefaultNoteAnimation();
 
 		this.notes.push(noteSprite);
 		this.add(noteSprite);
-	}
-
-	toSBString(){
-		let ret = super.toSBString();
-
-		for(const note of this.notes){
-			ret += note.toSBString();
-		}
-
-		return ret;
 	}
 }

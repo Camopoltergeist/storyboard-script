@@ -2,7 +2,7 @@ import { Camera, Scene, WebGLRenderer } from "three";
 import { inverseLerp } from "three/src/math/MathUtils";
 import { updateAnimations } from "./animations";
 import { GenerateOptions } from "./dock";
-import { SBAble } from "./sbable";
+import { SBAble, SBSprite } from "./sbable";
 
 const variableString = `[Variables]
 $m= M,0,
@@ -13,29 +13,44 @@ $f= F,0,
 `;
 
 export function* generateStoryboard(renderer: WebGLRenderer, scene: Scene, camera: Camera, options: GenerateOptions) {
-	let currentFrame = 0;
-	let currentTime = Math.round(options.startTime);
+	const sbAbles: SBAble[] = [];
 
-	while(currentTime < options.endTime){
-		updateAnimations(currentTime);
+	scene.traverse((object3d) => {
+		if(object3d instanceof SBSprite){
+			sbAbles.push(object3d);
+		}
+	});
 
-		// Render call is the easiest way to make sure all world matrises are up to date
-		renderer.render(scene, camera);
+	let itemsLeft = sbAbles.length;
 
-		for(const child of scene.children as SBAble[]){
-			child.generateKeyframes(camera, currentTime);
+	for(const sb of sbAbles){
+		let currentFrame = 0;
+		let currentTime = Math.round(options.startTime);
+
+		while(currentTime < options.endTime){
+			currentTime = Math.round(options.startTime + 1000 / options.frameRate * currentFrame);
+			currentFrame++;
+
+			updateAnimations(currentTime);
+	
+			// Render call is the easiest way to make sure all world matrises are up to date
+			renderer.render(scene, camera);
+	
+			sb.generateKeyframes(camera, currentTime);
+	
+			yield {
+				itemProgress: inverseLerp(options.startTime, options.endTime, currentTime),
+				itemsLeft
+			};
 		}
 
-		currentTime = Math.round(options.startTime + 1000 / options.frameRate * currentFrame);
-		currentFrame++;
-
-		yield inverseLerp(options.startTime, options.endTime, currentTime);
+		itemsLeft--;
 	}
 
 	let sbString = variableString + "[Events]\n";
 
-	for(const child of scene.children as SBAble[]){
-		sbString += child.toSBString();
+	for(const sb of sbAbles){
+		sbString += sb.toSBString();
 	}
 
 	sbString += "\n\n";

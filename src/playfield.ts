@@ -1,8 +1,7 @@
-import { Camera, Object3D, SpriteMaterial } from "three";
-import { SBAble } from "./sbable";
+import { Object3D, SpriteMaterial } from "three";
 import { SBLane } from "./sblane";
 
-export class Playfield extends Object3D implements SBAble{
+export class Playfield extends Object3D {
 	private readonly lanes: SBLane[];
 
 	constructor(noteMaterials: SpriteMaterial[], laneWidth = 0.9){
@@ -26,28 +25,8 @@ export class Playfield extends Object3D implements SBAble{
 		}
 	}
 
-	generateKeyframes(camera: Camera, time: number){
-		if(!this.visible){
-			return;
-		}
-
-		for(const lane of this.lanes){
-			lane.generateKeyframes(camera, time);
-		}
-	}
-
 	addNote(lane: number, time: number, snap: number){
 		this.lanes[lane].addNote(time, snap);
-	}
-
-	toSBString(){
-		let ret = "";
-
-		for(const lane of this.lanes){
-			ret += lane.toSBString();
-		}
-
-		return ret;
 	}
 }
 
