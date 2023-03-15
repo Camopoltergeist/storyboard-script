@@ -11,7 +11,7 @@ $s= S,0,
 $f= F,0,
 `;
 
-export function* generateStoryboard(renderer: WebGLRenderer, scene: Scene, camera: Camera, options: GenerateOptions) {
+export function* generateStoryboard(scene: Scene, camera: Camera, options: GenerateOptions) {
 	const sbAbles: SBAble[] = [];
 
 	scene.traverse((object3d) => {
@@ -27,14 +27,14 @@ export function* generateStoryboard(renderer: WebGLRenderer, scene: Scene, camer
 		let currentTime = Math.round(Math.max(options.startTime, sb.getStartTime()));
 
 		while(currentTime < options.endTime){
-			currentTime = Math.round(options.startTime + 1000 / options.frameRate * currentFrame);
-			currentFrame++;
-
 			updateAnimations(currentTime);
 	
 			sb.updateWorldMatrix(true, false);
 	
 			sb.generateKeyframes(camera, currentTime);
+
+			currentFrame++;
+			currentTime = Math.round(options.startTime + 1000 / options.frameRate * currentFrame);
 		}
 
 		yield itemsLeft;
