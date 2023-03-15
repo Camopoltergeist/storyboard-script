@@ -8,18 +8,9 @@ export class SBNote extends SBSprite{
 	constructor(material: SpriteMaterial, time: number){
 		const materialCopy = material.clone();
 
-		super(materialCopy, time - 1000);
+		super(materialCopy, time - 1000, time);
 
 		this.time = time;
-	}
-
-	updateVisibility(currentTime: number){
-		if(currentTime < this.time - 1000 || currentTime > this.time){
-			this.visible = false;
-		}
-		else{
-			this.visible = true;
-		}
 	}
 
 	createDefaultNoteAnimation(){

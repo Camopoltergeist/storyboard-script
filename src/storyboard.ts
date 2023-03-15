@@ -1,4 +1,4 @@
-import { Camera, Scene, WebGLRenderer } from "three";
+import { Camera, Scene } from "three";
 import { updateAnimations } from "./animations";
 import { GenerateOptions } from "./dock";
 import { SBAble, SBSprite } from "./sbable";
@@ -23,18 +23,27 @@ export function* generateStoryboard(scene: Scene, camera: Camera, options: Gener
 	let itemsLeft = sbAbles.length;
 
 	for(const sb of sbAbles){
-		let currentFrame = 0;
-		let currentTime = Math.round(Math.max(options.startTime, sb.getStartTime()));
+		const startTime = Math.max(options.startTime, sb.getStartTime());
+		const endTime = Math.min(options.endTime, sb.getEndTime());
+		const length = endTime - startTime;
 
-		while(currentTime < options.endTime){
-			updateAnimations(currentTime);
+		let currentFrame = 0;
+		let currentTime = startTime;
+		let currentTimeRounded = Math.round(currentTime);
+
+		// Adjust frame rate so final frame lands on the end time.
+		const frameRate = length / Math.floor(length / options.frameRate);
+
+		while(currentTime < endTime){
+			updateAnimations(currentTimeRounded);
 	
 			sb.updateWorldMatrix(true, false);
 	
-			sb.generateKeyframes(camera, currentTime);
+			sb.generateKeyframes(camera, currentTimeRounded);
 
 			currentFrame++;
-			currentTime = Math.round(options.startTime + 1000 / options.frameRate * currentFrame);
+			currentTime = startTime + 1000 / frameRate * currentFrame;
+			currentTimeRounded = Math.round(currentTime);
 		}
 
 		yield itemsLeft;

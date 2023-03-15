@@ -6,17 +6,20 @@ export interface SBAble extends Object3D{
 	generateKeyframes(camera: Camera, time: number): void;
 	toSBString(): string;
 	getStartTime(): number;
+	getEndTime(): number;
 }
 
 export class SBSprite extends Sprite implements SBAble{
 	readonly sbObject: SBObject;
 	readonly startTime: number;
+	readonly endTime: number;
 
-	constructor(material: SpriteMaterial, startTime: number = 0){
+	constructor(material: SpriteMaterial, startTime: number = 0, endTime: number = Infinity){
 		super(material);
 
 		this.sbObject = new SBObject(this.material.map?.userData.textureName, true);
 		this.startTime = startTime;
+		this.endTime = endTime;
 	}
 
 	generateKeyframes(camera: Camera, time: number){
@@ -35,5 +38,9 @@ export class SBSprite extends Sprite implements SBAble{
 	
 	getStartTime(): number {
 		return this.startTime;
+	}
+
+	getEndTime(): number {
+		return this.endTime;
 	}
 }
