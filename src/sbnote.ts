@@ -32,13 +32,9 @@ export class SBNote extends SBSprite{
 
 		const noteMovementTrack = new NumberKeyframeTrack(".position[y]", [kfStart, kfEnd], [5, 0]);
 		const noteVisibilityTrack = new BooleanKeyframeTrack(".visible", [kfStart, kfStart, kfEnd], [false, true, false]);
-		const noteClip = new AnimationClip("note", -1, [noteMovementTrack, noteVisibilityTrack]);
+		const noteOpacityTrack = new NumberKeyframeTrack(`.material.opacity`, [kfStart, kfStart + 0.1], [0.0, 1.0]);
+		const noteClip = new AnimationClip("note", -1, [noteMovementTrack, noteVisibilityTrack, noteOpacityTrack]);
 
 		addAnimation(noteClip, this);
-
-		const noteOpacityTrack = new NumberKeyframeTrack(`.opacity`, [kfStart, kfStart + 0.1], [0.0, 1.0]);
-		const materialClip = new AnimationClip("noteMaterial", -1, [noteOpacityTrack]);
-
-		addAnimation(materialClip, this.material);
 	}
 }
