@@ -8,7 +8,7 @@ export class SBNote extends SBSprite{
 	constructor(material: SpriteMaterial, time: number){
 		const materialCopy = material.clone();
 
-		super(materialCopy);
+		super(materialCopy, time - 1000);
 
 		this.time = time;
 	}
