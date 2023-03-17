@@ -5,7 +5,7 @@ import { Playfield } from "./playfield";
 import noteData from "./murasame.json";
 import { generateStoryboard } from "./storyboard";
 import { updateAnimations } from "./animations";
-import { GenerateOptions, setGenerateListener, setOutput, setProgressBar } from "./dock";
+import { disableOptions, enableOptions, GenerateOptions, setGenerateListener, setOutput, setProgressBar } from "./dock";
 
 const mainCanvas = document.getElementById("mainCanvas") as HTMLCanvasElement | null;
 
@@ -56,6 +56,7 @@ loadNoteTextures().then((textures) => {
 });
 
 function generateListener(options: GenerateOptions){
+	disableOptions();
 	renderer.setAnimationLoop(null);
 
 	const sbGen = generateStoryboard(scene, camera, options);
@@ -68,6 +69,7 @@ function generateListener(options: GenerateOptions){
 		if(pogress.done){
 			setOutput(pogress.value);
 			setProgressBar(1);
+			enableOptions();
 			return;
 		}
 

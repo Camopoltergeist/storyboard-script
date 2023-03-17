@@ -65,6 +65,7 @@
 
 			.disableOptions{
 				pointer-events: none;
+				opacity: 0.5;
 			}
 
 			#storyboardOutput{
@@ -115,7 +116,7 @@
 	<body>
 		<div id="contentFlexBox">
 			<div id="dock" class="">
-				<div class="optionContainer dockItem">
+				<div class="optionContainer dockItem" id="options">
 					<div class="optionItem"><label for="startTime">Start Time (ms)</label><input class="numberInput" type="number" id="startTime" value="0"></div>
 					<div class="optionItem"><label for="endTime">End Time (ms)</label><input class="numberInput" type="number" id="endTime" value="0"></div>
 					<div class="optionItem"><label for="frameRate">Frame Rate</label><input class="numberInput" type="number" id="frameRate" value="15"></div>

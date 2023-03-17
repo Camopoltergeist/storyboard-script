@@ -6,6 +6,7 @@ const startTimeElement = document.getElementById("startTime") as HTMLInputElemen
 const endTimeElement = document.getElementById("endTime") as HTMLInputElement | null;
 const frameRateElement = document.getElementById("frameRate") as HTMLInputElement | null;
 const progressBarElement = document.getElementById("progressBar") as HTMLInputElement | null;
+const optionsElement = document.getElementById("options") as HTMLDivElement | null;
 
 if(cullKeyframesElement === null ||
 	useVariableCompressionElement === null ||
@@ -14,7 +15,8 @@ if(cullKeyframesElement === null ||
 	startTimeElement === null ||
 	endTimeElement === null ||
 	frameRateElement === null ||
-	progressBarElement === null
+	progressBarElement === null ||
+	optionsElement === null
 	){
 	throw new Error("Could not find option elements in document!");
 }
@@ -62,6 +64,14 @@ export function setOutput(output: string){
 export function setProgressBar(progress: number){
 	const percentage = progress * 100;
 	(progressBarElement as HTMLDivElement).style.width = `${percentage}%`;
+}
+
+export function disableOptions(){
+	(optionsElement as HTMLDivElement).classList.add("disableOptions");
+}
+
+export function enableOptions(){
+	(optionsElement as HTMLDivElement).classList.remove("disableOptions");
 }
 
 const defaultOptions: GenerateOptions = {
