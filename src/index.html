@@ -103,6 +103,12 @@
 				float: right;
 				padding: 0;
 			}
+
+			#progressBar{
+				background-color: rgb(0, 119, 255);
+				height: 100%;
+				width: 0;
+			}
 		</style>
 	</head>
 
@@ -116,6 +122,7 @@
 					<div class="optionItem"><label for="cullKeyframes">Cull obsolete keyframes</label><input class="checkbox" type="checkbox" id="cullKeyframes" checked></div>
 					<div class="optionItem"><label for="useVariableCompression">Use variables to reduce filesize</label><input class="checkbox" type="checkbox" id="useVariableCompression" checked></div>
 					<div class="optionItem"><button id="generateButton">Generate Storyboard</button></div>
+					<div class="optionItem"><div id="progressBar"></div></div>
 				</div>
 				<div class="dockItem" id="outputContainer">
 					<div id="storyboardOutput"></div>

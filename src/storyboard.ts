@@ -46,7 +46,7 @@ export function* generateStoryboard(scene: Scene, camera: Camera, options: Gener
 			currentTimeRounded = Math.round(currentTime);
 		}
 
-		yield itemsLeft;
+		yield 1 - (itemsLeft / sbAbles.length);
 		itemsLeft--;
 	}
 

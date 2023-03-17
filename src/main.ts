@@ -5,7 +5,7 @@ import { Playfield } from "./playfield";
 import noteData from "./murasame.json";
 import { generateStoryboard } from "./storyboard";
 import { updateAnimations } from "./animations";
-import { GenerateOptions, setGenerateListener, setOutput } from "./dock";
+import { GenerateOptions, setGenerateListener, setOutput, setProgressBar } from "./dock";
 
 const mainCanvas = document.getElementById("mainCanvas") as HTMLCanvasElement | null;
 
@@ -60,16 +60,30 @@ function generateListener(options: GenerateOptions){
 
 	const sbGen = generateStoryboard(scene, camera, options);
 
-	while(true){
+	let lastProgress = 0;
+
+	function processItem(){
 		const pogress = sbGen.next();
 
 		if(pogress.done){
 			setOutput(pogress.value);
-			break;
+			setProgressBar(1);
+			return;
 		}
 
-		console.log(pogress.value);
+		const progress = pogress.value;
+
+		// Update bar only on one percent intervals
+		if(lastProgress % 0.01 > progress % 0.01){
+			setProgressBar(progress);
+		}
+
+		lastProgress = progress;
+
+		setTimeout(processItem, 0);
 	}
+
+	setTimeout(processItem, 0);
 }
 
 setGenerateListener(generateListener);
