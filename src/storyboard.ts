@@ -1,6 +1,7 @@
 import { Camera, Scene } from "three";
 import { updateAnimations } from "./animations";
 import { GenerateOptions } from "./dock";
+import { Playfield } from "./playfield";
 import { SBAble, SBSprite } from "./sbable";
 
 const variableString = `[Variables]
@@ -13,10 +14,15 @@ $f= F,0,
 
 export function* generateStoryboard(scene: Scene, camera: Camera, options: GenerateOptions) {
 	const sbAbles: SBAble[] = [];
+	const playfields: Playfield[] = [];
 
 	scene.traverse((object3d) => {
 		if(object3d instanceof SBSprite){
 			sbAbles.push(object3d);
+		}
+
+		if(object3d instanceof Playfield){
+			playfields.push(object3d);
 		}
 	});
 
@@ -35,6 +41,10 @@ export function* generateStoryboard(scene: Scene, camera: Camera, options: Gener
 		const frameRate = length / Math.floor(length / options.frameRate);
 
 		while(currentTime < endTime){
+			for(const playfield of playfields){
+				playfield.updateNotePositions(currentTime);
+			}
+
 			updateAnimations(currentTimeRounded);
 	
 			sb.updateWorldMatrix(true, false);

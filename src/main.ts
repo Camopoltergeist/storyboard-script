@@ -92,6 +92,7 @@ setGenerateListener(generateListener);
 
 function step(time: number){
 	updateAnimations(time);
+	playfield.updateNotePositions(time);
 	
 	// const rot = new Euler(0, time / 1000 * Math.PI * 2, 0);
 	// playfield.setRotationFromEuler(rot);

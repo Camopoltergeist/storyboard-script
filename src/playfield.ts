@@ -28,5 +28,11 @@ export class Playfield extends Object3D {
 	addNote(lane: number, time: number, snap: number){
 		this.lanes[lane].addNote(time, snap);
 	}
+
+	updateNotePositions(time: number){
+		for(const lane of this.lanes){
+			lane.updateNotePositions(time);
+		}
+	}
 }
 
