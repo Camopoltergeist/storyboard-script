@@ -1,4 +1,4 @@
-import { Camera, Sprite, Vector2, Vector3 } from "three";
+import { Camera, Vector2, Vector3 } from "three";
 import { inverseLerp, lerp } from "three/src/math/MathUtils";
 import { SBSprite } from "./sbable";
 

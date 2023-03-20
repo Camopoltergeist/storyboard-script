@@ -5,6 +5,7 @@ import { createNoteMaterials, loadNoteTextures } from "./notetextureloader";
 import { generateStoryboard } from "./storyboard";
 import { disableOptions, enableOptions, GenerateOptions, setGenerateListener, setOutput, setProgressBar } from "./dock";
 import { TimelineController } from "./timelinecontroller";
+import { TimelineClock } from "./clock";
 
 const mainCanvas = document.getElementById("mainCanvas") as HTMLCanvasElement | null;
 
@@ -30,6 +31,7 @@ const resizeObserver = new ResizeObserver((entries, observer) => {
 });
 
 let tlController: TimelineController;
+const tlClock = new TimelineClock();
 
 loadNoteTextures().then((textures) => {
 	const noteMaterials = createNoteMaterials(textures);
@@ -37,11 +39,13 @@ loadNoteTextures().then((textures) => {
 
 	resizeObserver.observe(renderer.domElement, { box: "device-pixel-content-box" });
 
+	tlClock.start();
 	renderer.setAnimationLoop(animationLoop);
 });
 
 function generateListener(options: GenerateOptions){
 	disableOptions();
+	tlClock.stop();
 	renderer.setAnimationLoop(null);
 
 	const sbGen = generateStoryboard(tlController, options);
@@ -55,6 +59,9 @@ function generateListener(options: GenerateOptions){
 			setOutput(pogress.value);
 			setProgressBar(1);
 			enableOptions();
+			
+			tlClock.start();
+			renderer.setAnimationLoop(animationLoop);
 			return;
 		}
 
@@ -76,6 +83,6 @@ function generateListener(options: GenerateOptions){
 setGenerateListener(generateListener);
 
 function animationLoop(time: number){
-	tlController.update(time);
+	tlController.update(tlClock.time);
 	renderer.render(tlController.scene, tlController.camera);
 }

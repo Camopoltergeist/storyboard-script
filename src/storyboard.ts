@@ -1,4 +1,3 @@
-import { updateAnimations } from "./animations";
 import { GenerateOptions } from "./dock";
 import { Playfield } from "./playfield";
 import { SBAble, SBSprite } from "./sbable";
