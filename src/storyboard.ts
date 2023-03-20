@@ -1,8 +1,8 @@
-import { Camera, Scene } from "three";
 import { updateAnimations } from "./animations";
 import { GenerateOptions } from "./dock";
 import { Playfield } from "./playfield";
 import { SBAble, SBSprite } from "./sbable";
+import { TimelineController } from "./timelinecontroller";
 
 const variableString = `[Variables]
 $m= M,0,
@@ -12,11 +12,11 @@ $s= S,0,
 $f= F,0,
 `;
 
-export function* generateStoryboard(scene: Scene, camera: Camera, options: GenerateOptions) {
+export function* generateStoryboard(tlController: TimelineController, options: GenerateOptions) {
 	const sbAbles: SBAble[] = [];
 	const playfields: Playfield[] = [];
 
-	scene.traverse((object3d) => {
+	tlController.scene.traverse((object3d) => {
 		if(object3d instanceof SBSprite){
 			sbAbles.push(object3d);
 		}
@@ -28,9 +28,9 @@ export function* generateStoryboard(scene: Scene, camera: Camera, options: Gener
 
 	let itemsLeft = sbAbles.length;
 
-	for(const sb of sbAbles){
-		const startTime = Math.max(options.startTime, sb.getStartTime());
-		const endTime = Math.min(options.endTime, sb.getEndTime());
+	for(const sbAble of sbAbles){
+		const startTime = Math.max(options.startTime, sbAble.getStartTime());
+		const endTime = Math.min(options.endTime, sbAble.getEndTime());
 		const length = endTime - startTime;
 
 		let currentFrame = 0;
@@ -41,15 +41,11 @@ export function* generateStoryboard(scene: Scene, camera: Camera, options: Gener
 		const frameRate = length / Math.floor(length / options.frameRate);
 
 		while(currentTime < endTime){
-			for(const playfield of playfields){
-				playfield.updateNotePositions(currentTime);
-			}
-
-			updateAnimations(currentTimeRounded);
+			tlController.update(currentTime);
 	
-			sb.updateWorldMatrix(true, false);
+			sbAble.updateWorldMatrix(true, false);
 	
-			sb.generateKeyframes(camera, currentTimeRounded);
+			sbAble.generateKeyframes(tlController.camera, currentTimeRounded);
 
 			currentFrame++;
 			currentTime = startTime + 1000 / frameRate * currentFrame;

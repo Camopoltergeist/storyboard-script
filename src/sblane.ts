@@ -10,7 +10,7 @@ export class SBLane extends SBSprite{
 	startPos: Vector3 = new Vector3(0, 5, 0);
 	endPos: Vector3 = new Vector3(0, 0, 0);
 
-	duration: number = 2000;
+	duration: number = 1000;
 
 	constructor(noteRotation: number, noteMaterials: SpriteMaterial[]){
 		const noteMaterialsCopy = [];
