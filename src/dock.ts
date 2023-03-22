@@ -8,7 +8,10 @@ const frameRateElement = document.getElementById("frameRate") as HTMLInputElemen
 const progressBarElement = document.getElementById("progressBar") as HTMLInputElement | null;
 const optionsElement = document.getElementById("options") as HTMLDivElement | null;
 const timelineDisplayElement = document.getElementById("timelineDisplay") as HTMLDivElement | null;
-const timelineContainerElement = document.getElementById("timelineContainer") as HTMLDivElement | null;
+const timelineContainerElement = document.getElementById("timelineDisplayContainer") as HTMLDivElement | null;
+const skipToStartButton = document.getElementById("skipToStartButton") as HTMLButtonElement | null;
+const pauseButton = document.getElementById("pauseButton") as HTMLButtonElement | null;
+const playButton = document.getElementById("playButton") as HTMLButtonElement | null;
 
 if(cullKeyframesElement === null ||
 	useVariableCompressionElement === null ||
@@ -20,7 +23,10 @@ if(cullKeyframesElement === null ||
 	progressBarElement === null ||
 	optionsElement === null ||
 	timelineDisplayElement === null ||
-	timelineContainerElement === null
+	timelineContainerElement === null ||
+	skipToStartButton === null ||
+	pauseButton === null ||
+	playButton === null
 	){
 	throw new Error("Could not find option elements in document!");
 }
@@ -149,4 +155,23 @@ function timelineSeekListenerWrapper(e: MouseEvent){
 function setTimelineDisplay(widthScale: number){
 	const finalPercent = widthScale * 100;
 	(timelineDisplayElement as HTMLDivElement).style.width = `${finalPercent}%`;
+}
+
+let skipToStartListener: () => void;
+let pauseListener: () => void;
+let playListener: () => void;
+
+export function setSkipToStartListener(listener: () => void){
+	skipToStartListener = listener;
+	(skipToStartButton as HTMLButtonElement).addEventListener("click", skipToStartListener);
+}
+
+export function setPauseListener(listener: () => void){
+	pauseListener = listener;
+	(pauseButton as HTMLButtonElement).addEventListener("click", pauseListener);
+}
+
+export function setPlayListener(listener: () => void){
+	playListener = listener;
+	(playButton as HTMLButtonElement).addEventListener("click", playListener);
 }

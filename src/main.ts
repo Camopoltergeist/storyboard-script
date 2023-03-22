@@ -3,7 +3,7 @@ import { WebGLRenderer } from "three";
 import { createNoteMaterials, loadNoteTextures } from "./notetextureloader";
 
 import { generateStoryboard } from "./storyboard";
-import { disableOptions, enableOptions, GenerateOptions, setGenerateListener, setOutput, setProgressBar, setTimelineDisplayTime, setTimelineSeekListener } from "./dock";
+import { disableOptions, enableOptions, GenerateOptions, setGenerateListener, setOutput, setPauseListener, setPlayListener, setProgressBar, setSkipToStartListener, setTimelineDisplayTime, setTimelineSeekListener } from "./dock";
 import { SceneController } from "./scenecontroller";
 import { TimelineClock } from "./clock";
 
@@ -84,8 +84,24 @@ function timelineSeekListener(time: number){
 	tlClock.time = time;
 }
 
+function skipToStartListener(){
+	tlClock.reset();
+}
+
+function pauseListener(){
+	tlClock.stop();
+}
+
+function playListener(){
+	tlClock.start();
+}
+
 setGenerateListener(generateListener);
 setTimelineSeekListener(timelineSeekListener);
+
+setSkipToStartListener(skipToStartListener);
+setPauseListener(pauseListener);
+setPlayListener(playListener);
 
 function animationLoop(time: number){
 	const tlTime = tlClock.time;
