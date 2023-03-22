@@ -1,7 +1,7 @@
 import { GenerateOptions } from "./dock";
 import { Playfield } from "./playfield";
 import { SBAble, SBSprite } from "./sbable";
-import { TimelineController } from "./timelinecontroller";
+import { SceneController } from "./scenecontroller";
 
 const variableString = `[Variables]
 $m= M,0,
@@ -11,7 +11,7 @@ $s= S,0,
 $f= F,0,
 `;
 
-export function* generateStoryboard(tlController: TimelineController, options: GenerateOptions) {
+export function* generateStoryboard(tlController: SceneController, options: GenerateOptions) {
 	const sbAbles: SBAble[] = [];
 	const playfields: Playfield[] = [];
 

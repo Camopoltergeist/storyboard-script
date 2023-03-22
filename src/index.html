@@ -110,6 +110,38 @@
 				height: 100%;
 				width: 0;
 			}
+
+			#timelineContainer{
+				background-color: #222;
+				position: relative;
+				height: 20px;
+			}
+
+			#timelineControlContainer{
+				position: absolute;
+				bottom: -40px;
+				left: 0;
+				display: flex;
+				flex-direction: row;
+				margin: 0;
+			}
+
+			#timelineDisplay{
+				background-color: red;
+				margin: 0;
+				width: 50%;
+				height: 100%;
+			}
+
+			#timelineDisplayContainer{
+				height: 100%;
+			}
+
+			.timelineControl{
+				width: 40px;
+				height: 40px;
+				margin: 0;
+			}
 		</style>
 	</head>
 
@@ -127,6 +159,17 @@
 				</div>
 				<div class="dockItem" id="outputContainer">
 					<div id="storyboardOutput"></div>
+				</div>
+			</div>
+			<div id="timelineContainer">
+				<div id="timelineDisplayContainer">
+					<div id="timelineDisplay"></div>
+				</div>
+				<div id="timelineControlContainer">
+					<button class="timelineControl" id="skipToStartButton">|&lt;</button>
+					<button class="timelineControl" id="pauseButton">||</button>
+					<button class="timelineControl" id="playButton">&gt;</button>
+					<button class="timelineControl" id="skipToEndButton">&gt;|</button>
 				</div>
 			</div>
 			<div id="canvasContainer">

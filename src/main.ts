@@ -3,8 +3,8 @@ import { WebGLRenderer } from "three";
 import { createNoteMaterials, loadNoteTextures } from "./notetextureloader";
 
 import { generateStoryboard } from "./storyboard";
-import { disableOptions, enableOptions, GenerateOptions, setGenerateListener, setOutput, setProgressBar } from "./dock";
-import { TimelineController } from "./timelinecontroller";
+import { disableOptions, enableOptions, GenerateOptions, setGenerateListener, setOutput, setProgressBar, setTimelineDisplayTime } from "./dock";
+import { SceneController } from "./scenecontroller";
 import { TimelineClock } from "./clock";
 
 const mainCanvas = document.getElementById("mainCanvas") as HTMLCanvasElement | null;
@@ -30,12 +30,12 @@ const resizeObserver = new ResizeObserver((entries, observer) => {
 	}
 });
 
-let tlController: TimelineController;
+let tlController: SceneController;
 const tlClock = new TimelineClock();
 
 loadNoteTextures().then((textures) => {
 	const noteMaterials = createNoteMaterials(textures);
-	tlController = new TimelineController(noteMaterials);
+	tlController = new SceneController(noteMaterials);
 
 	resizeObserver.observe(renderer.domElement, { box: "device-pixel-content-box" });
 
@@ -83,6 +83,9 @@ function generateListener(options: GenerateOptions){
 setGenerateListener(generateListener);
 
 function animationLoop(time: number){
-	tlController.update(tlClock.time);
+	const tlTime = tlClock.time;
+	setTimelineDisplayTime(tlTime);
+
+	tlController.update(tlTime);
 	renderer.render(tlController.scene, tlController.camera);
 }

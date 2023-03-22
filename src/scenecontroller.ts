@@ -4,7 +4,7 @@ import { Playfield } from "./playfield";
 import noteData from "./murasame.json";
 import { updateAnimations } from "./animations";
 
-export class TimelineController{
+export class SceneController{
 	readonly scene: Scene;
 	readonly camera: PerspectiveCamera;
 

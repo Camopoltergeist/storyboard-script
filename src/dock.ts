@@ -7,6 +7,8 @@ const endTimeElement = document.getElementById("endTime") as HTMLInputElement | 
 const frameRateElement = document.getElementById("frameRate") as HTMLInputElement | null;
 const progressBarElement = document.getElementById("progressBar") as HTMLInputElement | null;
 const optionsElement = document.getElementById("options") as HTMLDivElement | null;
+const timelineDisplayElement = document.getElementById("timelineDisplay") as HTMLDivElement | null;
+const timelineContainerElement = document.getElementById("timelineContainer") as HTMLDivElement | null;
 
 if(cullKeyframesElement === null ||
 	useVariableCompressionElement === null ||
@@ -16,7 +18,9 @@ if(cullKeyframesElement === null ||
 	endTimeElement === null ||
 	frameRateElement === null ||
 	progressBarElement === null ||
-	optionsElement === null
+	optionsElement === null ||
+	timelineDisplayElement === null ||
+	timelineContainerElement === null
 	){
 	throw new Error("Could not find option elements in document!");
 }
@@ -38,7 +42,7 @@ export interface GenerateOptions{
 	frameRate: number;
 }
 
-function generateListenerWrapper(e: MouseEvent){
+function getOptions(): GenerateOptions{
 	const cullKeyframes = (cullKeyframesElement as HTMLInputElement).checked;
 	const useVariableCompression = (useVariableCompressionElement as HTMLInputElement).checked;
 	const startTime = Number((startTimeElement as HTMLInputElement).value);
@@ -52,6 +56,12 @@ function generateListenerWrapper(e: MouseEvent){
 		endTime,
 		frameRate
 	};
+
+	return options;
+}
+
+function generateListenerWrapper(e: MouseEvent){
+	const options = getOptions();
 
 	saveOptions(options);
 	generateListener(options);
@@ -109,3 +119,26 @@ function saveOptions(options: GenerateOptions){
 }
 
 loadOptions();
+
+export function setTimelineDisplayTime(time: number){
+	const options = getOptions();
+
+	const widthScale = time / options.endTime;
+	setTimelineDisplay(widthScale);
+}
+
+function setTimelineDisplay(widthScale: number){
+	const finalPercent = widthScale * 100;
+	(timelineDisplayElement as HTMLDivElement).style.width = `${finalPercent}%`;
+}
+
+function setTimelineDisplayPixels(width: number){
+	const elemWidth = (timelineContainerElement as HTMLDivElement).offsetWidth;
+	const widthScale = width / elemWidth;
+
+	setTimelineDisplay(widthScale);
+}
+
+timelineContainerElement.addEventListener("click", (e) => {
+	setTimelineDisplayPixels(e.offsetX);
+});
