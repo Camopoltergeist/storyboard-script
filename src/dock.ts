@@ -31,7 +31,7 @@ let generateListener: GenerateListener;
 
 export function setGenerateListener(eventListener: GenerateListener){
 	generateListener = eventListener;
-	(generateButton as HTMLButtonElement).addEventListener("click", async (e) => { generateListenerWrapper(e); });
+	(generateButton as HTMLButtonElement).addEventListener("click", generateListenerWrapper);
 }
 
 export interface GenerateOptions{
@@ -127,18 +127,26 @@ export function setTimelineDisplayTime(time: number){
 	setTimelineDisplay(widthScale);
 }
 
+type TimelineSeekListener = (time: number) => void;
+
+let timelineSeekListener: TimelineSeekListener;
+
+export function setTimelineSeekListener(listener: TimelineSeekListener){
+	timelineSeekListener = listener;
+	(timelineContainerElement as HTMLDivElement).addEventListener("click", timelineSeekListenerWrapper);
+}
+
+function timelineSeekListenerWrapper(e: MouseEvent){
+	const elemWidth = (timelineContainerElement as HTMLDivElement).offsetWidth;
+	const widthScale = e.offsetX / elemWidth;
+
+	const options = getOptions();
+	const time = widthScale * options.endTime;
+
+	timelineSeekListener(time);
+}
+
 function setTimelineDisplay(widthScale: number){
 	const finalPercent = widthScale * 100;
 	(timelineDisplayElement as HTMLDivElement).style.width = `${finalPercent}%`;
 }
-
-function setTimelineDisplayPixels(width: number){
-	const elemWidth = (timelineContainerElement as HTMLDivElement).offsetWidth;
-	const widthScale = width / elemWidth;
-
-	setTimelineDisplay(widthScale);
-}
-
-timelineContainerElement.addEventListener("click", (e) => {
-	setTimelineDisplayPixels(e.offsetX);
-});
