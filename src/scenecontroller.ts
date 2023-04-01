@@ -3,6 +3,12 @@ import { Playfield } from "./playfield";
 
 import noteData from "./murasame.json";
 import { updateAnimations } from "./animations";
+import { ChartTime, TimingPoint } from "./timing";
+
+type Note = {chartTime: ChartTime, lane: number};
+
+const notes: Note[] = [];
+const timingPoints: TimingPoint[] = [];
 
 export class SceneController{
 	readonly scene: Scene;
@@ -21,8 +27,8 @@ export class SceneController{
 		this.playfield.position.y = -4;
 		this.playfield.position.z = 1;
 
-		for(const note of noteData){
-			this.playfield.addNote(note.lane, note.time, note.snap);
+		for(const note of notes){
+			this.playfield.addNote(note.lane, note.chartTime.time, note.chartTime.snap);
 		}
 
 		this.scene.add(this.playfield);
@@ -33,3 +39,19 @@ export class SceneController{
 		this.playfield.updateNotePositions(time);
 	}
 }
+
+function parseChart(){
+	const timingPoint = noteData.timingPoints[0];
+	timingPoints.push(new TimingPoint(timingPoint.bpm, timingPoint.time));
+
+	for(const note of noteData.notes){
+		const chartTime = new ChartTime(timingPoints[0], note.beat);
+
+		notes.push({
+			chartTime,
+			lane: note.lane
+		});
+	}
+}
+
+parseChart();

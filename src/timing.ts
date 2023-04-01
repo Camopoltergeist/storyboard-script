@@ -13,15 +13,15 @@ export class ChartTime {
 		const remainder = this.beat % 1;
 
 		if(remainder < 0.001){
-			return 4;
+			return 1;
 		}
 
 		if(remainder % (1 / 2) < 0.001){
-			return 8;
+			return 2;
 		}
 
 		if(remainder % (1 / 4) < 0.001){
-			return 16;
+			return 3;
 		}
 
 		return 0;
