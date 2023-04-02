@@ -3,6 +3,11 @@ declare module "*.png" {
 	export default url;
 }
 
+declare module "*.jpg" {
+	const url: string;
+	export default url;
+}
+
 declare module "*.ogg" {
 	const url: string;
 	export default url;

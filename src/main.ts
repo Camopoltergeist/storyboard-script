@@ -1,11 +1,12 @@
 import { WebGLRenderer } from "three";
 
-import { createNoteMaterials, loadNoteTextures } from "./notetextureloader";
+import { createNoteMaterials, loadBgTexture, loadNoteTextures } from "./notetextureloader";
 
 import { generateStoryboard } from "./storyboard";
 import { disableOptions, enableOptions, GenerateOptions, setGenerateListener, setOutput, setPauseListener, setPlayListener, setProgressBar, setSkipToStartListener, setTimelineDisplayTime, setTimelineSeekListener } from "./dock";
 import { SceneController } from "./scenecontroller";
 import { TimelineClock } from "./clock";
+import { BackgroundImage } from "./backgroundimage";
 
 const mainCanvas = document.getElementById("mainCanvas") as HTMLCanvasElement | null;
 
@@ -18,6 +19,8 @@ const renderer = new WebGLRenderer({
 	powerPreference: "high-performance",
 	canvas: mainCanvas
 });
+
+renderer.autoClear = false;
 
 const resizeObserver = new ResizeObserver((entries, observer) => {
 	for(const entry of entries){
@@ -32,10 +35,14 @@ const resizeObserver = new ResizeObserver((entries, observer) => {
 
 let tlController: SceneController;
 const tlClock = new TimelineClock();
+let bgImage: BackgroundImage;
 
-loadNoteTextures().then((textures) => {
+loadNoteTextures().then(async (textures) => {
 	const noteMaterials = createNoteMaterials(textures);
 	tlController = new SceneController(noteMaterials);
+	
+	const bgTexture = await loadBgTexture();
+	bgImage = new BackgroundImage(bgTexture);
 
 	resizeObserver.observe(renderer.domElement, { box: "device-pixel-content-box" });
 
@@ -108,5 +115,9 @@ function animationLoop(time: number){
 	setTimelineDisplayTime(tlTime);
 
 	tlController.update(tlTime);
+	renderer.clear();
+
+	bgImage.render(renderer);
+
 	renderer.render(tlController.scene, tlController.camera);
 }
