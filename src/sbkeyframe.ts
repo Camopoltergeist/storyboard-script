@@ -45,13 +45,17 @@ export class SBKeyframe{
 	}
 	
 	static fromSprite(camera: Camera, time: number, sprite: SBSprite){
-		const worldPos =  new Vector3();
+		const worldPos = new Vector3();
 		sprite.getWorldPosition(worldPos);
+		const sizePos = new Vector3(0.5, 0, 0);
+		sprite.localToWorld(sizePos);
 
 		const sbCoord = this.projectToStoryboard(camera, worldPos);
+		const sbSizeCoord = this.projectToStoryboard(camera, sizePos);
 
-		// TODO: Figure out scale calculation
-		const scale = 0.1;
+		const sizeDistance = sbCoord.distanceTo(sbSizeCoord);
+
+		const scale = sizeDistance / sprite.textureSize.x * 2;
 		const rotation = sprite.material.rotation;
 
 		return new SBKeyframe(time, sbCoord, rotation, scale, true, sprite.material.opacity);
