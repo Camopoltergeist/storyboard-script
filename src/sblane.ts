@@ -69,7 +69,8 @@ export class SBLane extends SBSprite{
 	private updateNoteTransparency(time: number, note: SBNote){
 		const startTime = note.time - this.duration;
 
-		const opacity = inverseLerp(startTime, startTime + this.fadeInTime, time);
+		// Limit opacity to 1
+		const opacity = Math.min(inverseLerp(startTime, startTime + this.fadeInTime, time), 1);
 		note.material.opacity = opacity;
 	}
 }
