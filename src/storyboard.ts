@@ -71,7 +71,7 @@ export function* generateStoryboard(tlController: SceneController, options: Gene
 	let sbString = variableString + "[Events]\n";
 
 	// Add BG object string
-	sbString += `Sprite,4,1,"bg.jpg",320,240\n` + ` F,0,${options.startTime},${options.endTime},1,1\n`;
+	sbString += `Sprite,4,1,"bg.jpg",320,240\n` + `$s${options.startTime},${options.endTime},${tlController.background.storyboardScale},${tlController.background.storyboardScale}\n`;
 
 	for(const sb of sbAbles){
 		sbString += sb.toSBString();

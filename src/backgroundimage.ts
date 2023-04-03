@@ -1,4 +1,5 @@
 import { DoubleSide, OrthographicCamera, Scene, Sprite, SpriteMaterial, Texture, Vector2, WebGLRenderer } from "three";
+import { sbAspectRatio, sbWidth } from "./sbkeyframe";
 
 export class BackgroundImage{
 	private readonly scene: Scene;
@@ -12,6 +13,15 @@ export class BackgroundImage{
 
 	private get inverseAspect(): number{
 		return this.textureSize.y / this.textureSize.x;
+	}
+
+	get storyboardScale(): number{
+		if(this.aspect < sbAspectRatio){
+			return sbWidth / this.textureSize.x;
+		}
+		else{
+			return 480 / this.textureSize.y;
+		}
 	}
 
 	constructor(texture: Texture){

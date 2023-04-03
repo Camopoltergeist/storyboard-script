@@ -97,10 +97,10 @@ export class SBPositionKeyframe{
 	}
 }
 
-const sbAspectRatio = 16 / 9;
-const sbHeight = 480;
-const sbWidth = sbAspectRatio * sbHeight;
-const sbLeft = (640 - sbWidth) / 2;
+export const sbAspectRatio = 16 / 9;
+export const sbHeight = 480;
+export const sbWidth = sbAspectRatio * sbHeight;
+export const sbLeft = (640 - sbWidth) / 2;
 
 // Normalized device coordinates to Storyboard coordinates
 function ndcToSbc(input: Vector2): Vector2{

@@ -1,9 +1,10 @@
-import { PerspectiveCamera, Scene, SpriteMaterial } from "three";
+import { PerspectiveCamera, Scene, SpriteMaterial, Texture, WebGLRenderer } from "three";
 import { Playfield } from "./playfield";
 
 import noteData from "./murasame.json";
 import { updateAnimations } from "./animations";
 import { ChartTime, TimingPoint } from "./timing";
+import { BackgroundImage } from "./backgroundimage";
 
 type Note = {chartTime: ChartTime, lane: number};
 
@@ -15,14 +16,17 @@ export class SceneController{
 	readonly camera: PerspectiveCamera;
 
 	readonly playfield: Playfield;
+	readonly background: BackgroundImage;
 
-	constructor(noteMaterials: SpriteMaterial[]){
+	constructor(noteMaterials: SpriteMaterial[], backgroundTexture: Texture){
 		this.scene = new Scene();
 		this.camera = new PerspectiveCamera(57, 16 / 9, 0.01, 1000);
 
 		this.camera.translateZ(10);
 
 		this.playfield = new Playfield(noteMaterials);
+
+		this.background = new BackgroundImage(backgroundTexture);
 
 		this.playfield.position.y = -4;
 		this.playfield.position.z = 1;

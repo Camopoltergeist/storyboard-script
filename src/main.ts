@@ -35,14 +35,12 @@ const resizeObserver = new ResizeObserver((entries, observer) => {
 
 let tlController: SceneController;
 const tlClock = new TimelineClock();
-let bgImage: BackgroundImage;
 
 loadNoteTextures().then(async (textures) => {
 	const noteMaterials = createNoteMaterials(textures);
-	tlController = new SceneController(noteMaterials);
-	
 	const bgTexture = await loadBgTexture();
-	bgImage = new BackgroundImage(bgTexture);
+
+	tlController = new SceneController(noteMaterials, bgTexture);
 
 	resizeObserver.observe(renderer.domElement, { box: "device-pixel-content-box" });
 
@@ -117,7 +115,7 @@ function animationLoop(time: number){
 	tlController.update(tlTime);
 	renderer.clear();
 
-	bgImage.render(renderer);
+	tlController.background.render(renderer);
 
 	renderer.render(tlController.scene, tlController.camera);
 }
