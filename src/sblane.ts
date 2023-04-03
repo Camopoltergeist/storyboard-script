@@ -29,7 +29,7 @@ export class SBLane extends SBSprite{
 	}
 
 	addNote(time: number, snap: number){
-		const noteSprite = new SBNote(this.noteMaterials[snap], time, this.duration + 500, this);
+		const noteSprite = new SBNote(this.noteMaterials[snap], time, this.duration, this);
 
 		this.setNoteAlphaKeyframes(noteSprite);
 		this.notes.push(noteSprite);

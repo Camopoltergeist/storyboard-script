@@ -1,4 +1,4 @@
-import { PerspectiveCamera, Scene, SpriteMaterial, Texture, WebGLRenderer } from "three";
+import { PerspectiveCamera, Scene, SpriteMaterial, Texture } from "three";
 import { Playfield } from "./playfield";
 
 import noteData from "./murasame.json";
