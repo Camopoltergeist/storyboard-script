@@ -1,9 +1,10 @@
 import { degToRad } from "three/src/math/MathUtils";
-import { Cullable, SBAlpha, SBKeyframe, SBPosition, SBRotation, SBScale } from "./sbkeyframe";
+import { Cullable, SBAlpha, SBPositionKeyframe, SBPosition, SBRotation, SBScale } from "./sbkeyframe";
 
 export class SBObject{
 	readonly textureName: string;
-	readonly keyframes: SBKeyframe[] = [];
+	readonly posKeyframes: SBPositionKeyframe[] = [];
+	readonly alphaKeyframes: SBAlpha[] = [];
 	readonly center: boolean;
 
 	constructor(textureName: string, center: boolean){
@@ -12,28 +13,25 @@ export class SBObject{
 	}
 
 	toSBString(): string{
-		if(this.keyframes.length < 2){
+		if(this.posKeyframes.length < 2){
 			return "";
 		}
 
 		let posFrames = [];
 		let rotFrames = [];
 		let scaleFrames = [];
-		let alphaFrames = [];
 
-		for(const kf of this.keyframes){
+		for(const kf of this.posKeyframes){
 			const split = kf.split();
 
 			posFrames.push(split.pos);
 			rotFrames.push(split.rot);
 			scaleFrames.push(split.scale);
-			alphaFrames.push(split.alpha);
 		}
 
 		posFrames = cullFrames(posFrames, 0.1) as SBPosition[];
 		rotFrames = cullFrames(rotFrames, degToRad(0.1)) as SBRotation[];
 		scaleFrames = cullFrames(scaleFrames, 0.005) as SBScale[];
-		alphaFrames = cullFrames(alphaFrames, 0.001) as SBAlpha[];
 
 		const firstKf = posFrames[0];
 		let ret = `Sprite,4,${this.center ? "1" : "2"},"${this.textureName}",${firstKf.position.x.toFixed(2)},${firstKf.position.y.toFixed(2)}\n`;
@@ -59,9 +57,9 @@ export class SBObject{
 			ret += SBScale.genSBString(kf, nextKf);
 		}
 
-		for(let i = 0; i < alphaFrames.length - 1; i++){
-			const kf = alphaFrames[i];
-			const nextKf = alphaFrames[i + 1];
+		for(let i = 0; i < this.alphaKeyframes.length - 1; i++){
+			const kf = this.alphaKeyframes[i];
+			const nextKf = this.alphaKeyframes[i + 1];
 
 			ret += SBAlpha.genSBString(kf, nextKf);
 		}

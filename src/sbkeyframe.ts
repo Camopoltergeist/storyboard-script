@@ -2,21 +2,19 @@ import { Camera, Vector2, Vector3 } from "three";
 import { inverseLerp, lerp } from "three/src/math/MathUtils";
 import { SBSprite } from "./sbable";
 
-export class SBKeyframe{
+export class SBPositionKeyframe{
 	time: number;
 	position: Vector2;
 	rotation: number;
 	scale: number;
 	scaleBoth: boolean;
-	alpha: number;
 
-	constructor(time: number, pos: Vector2, rot: number, scale: number, scaleBoth: boolean, alpha: number){
+	constructor(time: number, pos: Vector2, rot: number, scale: number, scaleBoth: boolean){
 		this.time = time;
 		this.position = pos;
 		this.rotation = rot;
 		this.scale = scale;
 		this.scaleBoth = scaleBoth;
-		this.alpha = alpha;
 	}
 
 	private static projectToStoryboard(camera: Camera, point: Vector3): Vector2{
@@ -34,14 +32,14 @@ export class SBKeyframe{
 		return sbPoint;
 	}
 
-	static fromLine(camera: Camera, time: number, lineStart: Vector3, lineEnd: Vector3, alpha: number, lineTextureLength: number = 128){
+	static fromLine(camera: Camera, time: number, lineStart: Vector3, lineEnd: Vector3, lineTextureLength: number = 128){
 		const sbStart = this.projectToStoryboard(camera, lineStart);
 		const sbEnd = this.projectToStoryboard(camera, lineEnd);
 
 		const scale = sbStart.distanceTo(sbEnd) / lineTextureLength;
 		const rotation = sbEnd.sub(sbStart).angle();
 
-		return new SBKeyframe(time, sbStart, rotation, scale, false, alpha);
+		return new SBPositionKeyframe(time, sbStart, rotation, scale, false);
 	}
 	
 	static fromSprite(camera: Camera, time: number, sprite: SBSprite){
@@ -58,10 +56,10 @@ export class SBKeyframe{
 		const scale = sizeDistance / sprite.textureSize.x * 2;
 		const rotation = sprite.material.rotation;
 
-		return new SBKeyframe(time, sbCoord, rotation, scale, true, sprite.material.opacity);
+		return new SBPositionKeyframe(time, sbCoord, rotation, scale, true);
 	}
 
-	toSBString(nextKeyframe: SBKeyframe): string{
+	toSBString(nextKeyframe: SBPositionKeyframe): string{
 		let nextRotation = nextKeyframe.rotation;
 
 		// Choose shortest rotation path.
@@ -90,13 +88,12 @@ export class SBKeyframe{
 		return retString;
 	}
 
-	split(): { pos: SBPosition, rot: SBRotation, scale: SBScale, alpha: SBAlpha }{
+	split(): { pos: SBPosition, rot: SBRotation, scale: SBScale }{
 		const pos = new SBPosition(this.time, this.position);
 		const rot = new SBRotation(this.time, this.rotation);
 		const scale = new SBScale(this.time, this.scale, this.scaleBoth);
-		const alpha = new SBAlpha(this.time, this.alpha);
 
-		return { pos, rot, scale, alpha };
+		return { pos, rot, scale };
 	}
 }
 
@@ -110,7 +107,7 @@ function ndcToSbc(input: Vector2): Vector2{
 	const x = (input.x + 1) / 2 * sbWidth + sbLeft;
 	const y = (1 - (input.y + 1) / 2) * sbHeight;
 
-	return new Vector2(x, y)
+	return new Vector2(x, y);
 }
 
 function checkThreshold(a: number, b: number, t: number){
@@ -211,20 +208,13 @@ export class SBScale implements Cullable{
 	}
 }
 
-export class SBAlpha implements Cullable{
+export class SBAlpha {
 	time: number;
 	alpha: number;
 
 	constructor(time: number, alpha: number){
-		this.time = time;
+		this.time = Math.round(time);
 		this.alpha = alpha;
-	}
-
-	cullable(previous: any, next: any, threshold: number): boolean {
-		const t = inverseLerp(previous.time, next.time, this.time);
-		const lerpedScale = lerp(previous.alpha, next.alpha, t);
-
-		return checkThreshold(this.alpha, lerpedScale, threshold);
 	}
 
 	static genSBString(current: SBAlpha, next: SBAlpha): string{

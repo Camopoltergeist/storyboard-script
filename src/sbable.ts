@@ -1,5 +1,5 @@
 import { Camera, Object3D, Sprite, SpriteMaterial, Vector2 } from "three";
-import { SBKeyframe } from "./sbkeyframe";
+import { SBAlpha, SBPositionKeyframe } from "./sbkeyframe";
 import { SBObject } from "./sbobject";
 
 export interface SBAble extends Object3D{
@@ -34,9 +34,9 @@ export class SBSprite extends Sprite implements SBAble{
 			return;
 		}
 
-		const kf = SBKeyframe.fromSprite(camera, time, this);
+		const kf = SBPositionKeyframe.fromSprite(camera, time, this);
 
-		this.sbObject.keyframes.push(kf);
+		this.sbObject.posKeyframes.push(kf);
 	}
 
 	toSBString(): string{

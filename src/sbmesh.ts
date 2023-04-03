@@ -1,5 +1,5 @@
 import { Camera, LineSegments, Mesh, Vector3 } from "three";
-import { SBKeyframe } from "./sbkeyframe";
+import { SBPositionKeyframe } from "./sbkeyframe";
 import { SBObject } from "./sbobject";
 
 export class SBMesh{
@@ -70,8 +70,8 @@ export class SBMesh{
 		lineStart.applyMatrix4(this.mesh.matrixWorld);
 		lineEnd.applyMatrix4(this.mesh.matrixWorld);
 
-		const kf = SBKeyframe.fromLine(camera, time, lineStart, lineEnd, 1);
-		child.keyframes.push(kf);
+		const kf = SBPositionKeyframe.fromLine(camera, time, lineStart, lineEnd, 1);
+		child.posKeyframes.push(kf);
 	}
 
 	toSBString(): string{

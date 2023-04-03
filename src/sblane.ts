@@ -2,6 +2,7 @@ import { SpriteMaterial, Vector3 } from "three";
 import { degToRad, inverseLerp, lerp } from "three/src/math/MathUtils";
 import { SBSprite } from "./sbable";
 import { SBNote } from "./sbnote";
+import { SBAlpha } from "./sbkeyframe";
 
 export class SBLane extends SBSprite{
 	private readonly notes: SBNote[];
@@ -28,10 +29,20 @@ export class SBLane extends SBSprite{
 	}
 
 	addNote(time: number, snap: number){
-		const noteSprite = new SBNote(this.noteMaterials[snap], time, this.duration, this);
+		const noteSprite = new SBNote(this.noteMaterials[snap], time, this.duration + 500, this);
 
+		this.setNoteAlphaKeyframes(noteSprite);
 		this.notes.push(noteSprite);
 		this.add(noteSprite);
+	}
+
+	private setNoteAlphaKeyframes(note: SBNote){
+		const startTime = Math.max(note.time - this.duration, note.startTime);
+
+		const startKf = new SBAlpha(startTime, 0);
+		const endKf = new SBAlpha(startTime + this.fadeInTime, 1);
+
+		note.sbObject.alphaKeyframes.push(startKf, endKf);
 	}
 
 	private getNotePosition(trackPos: number): Vector3{
