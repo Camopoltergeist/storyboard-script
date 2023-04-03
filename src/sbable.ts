@@ -30,10 +30,6 @@ export class SBSprite extends Sprite implements SBAble{
 	}
 
 	generateKeyframes(camera: Camera, time: number){
-		if(!this.visible){
-			return;
-		}
-
 		const kf = SBPositionKeyframe.fromSprite(camera, time, this);
 
 		this.sbObject.posKeyframes.push(kf);

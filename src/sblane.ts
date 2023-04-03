@@ -56,10 +56,6 @@ export class SBLane extends SBSprite{
 		for(const note of this.notes){
 			this.updateNoteVisibility(time, note);
 
-			if(!note.visible){
-				continue;
-			}
-
 			this.updateNoteTransparency(time, note);
 
 			const trackPos = this.calculateTrackPosition(time, note.time);
@@ -74,7 +70,7 @@ export class SBLane extends SBSprite{
 	}
 
 	private updateNoteVisibility(time: number, note: SBNote){
-		note.visible = time > note.time - this.duration && time < note.time;
+		note.visible = time >= note.time - this.duration && time <= note.time;
 	}
 
 	private updateNoteTransparency(time: number, note: SBNote){

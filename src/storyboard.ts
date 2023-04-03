@@ -37,18 +37,31 @@ export function* generateStoryboard(tlController: SceneController, options: Gene
 		let currentTimeRounded = Math.round(currentTime);
 
 		// Adjust frame rate so final frame lands on the end time.
+		// This doesn't work, should probably be removed
 		const frameRate = length / Math.floor(length / options.frameRate);
 
-		while(currentTime < endTime){
-			tlController.update(currentTime);
+		function genFrame(){
+			tlController.update(currentTimeRounded);
 	
 			sbAble.updateWorldMatrix(true, false);
 	
 			sbAble.generateKeyframes(tlController.camera, currentTimeRounded);
+		}
+
+		while(currentTime < endTime){
+			genFrame();
 
 			currentFrame++;
 			currentTime = startTime + 1000 / frameRate * currentFrame;
 			currentTimeRounded = Math.round(currentTime);
+		}
+
+		// Generate final keyframe at endTime
+		if(currentTime > endTime){
+			currentTime = endTime;
+			currentTimeRounded = Math.round(currentTime);
+
+			genFrame();
 		}
 
 		yield 1 - (itemsLeft / sbAbles.length);
