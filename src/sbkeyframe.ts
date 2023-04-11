@@ -3,11 +3,11 @@ import { inverseLerp, lerp } from "three/src/math/MathUtils";
 import { SBSprite } from "./sbable";
 
 export class SBPositionKeyframe{
-	time: number;
-	position: Vector2;
-	rotation: number;
-	scale: number;
-	scaleBoth: boolean;
+	readonly time: number;
+	readonly position: Vector2;
+	readonly rotation: number;
+	readonly scale: number;
+	readonly scaleBoth: boolean;
 
 	constructor(time: number, pos: Vector2, rot: number, scale: number, scaleBoth: boolean){
 		this.time = time;
