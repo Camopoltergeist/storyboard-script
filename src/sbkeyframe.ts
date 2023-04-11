@@ -1,4 +1,4 @@
-import { Camera, Vector2, Vector3 } from "three";
+import { Camera, Quaternion, Vector2, Vector3 } from "three";
 import { inverseLerp, lerp } from "three/src/math/MathUtils";
 import { SBSprite } from "./sbable";
 
@@ -46,6 +46,12 @@ export class SBPositionKeyframe{
 		const worldPos = new Vector3();
 		sprite.getWorldPosition(worldPos);
 		const sizePos = new Vector3(0.5, 0, 0);
+
+		// Apply the inverse of world rotation to the size position vector since the sprites always face the camera.
+		const sizeRot = sprite.getWorldQuaternion(new Quaternion());
+		sizeRot.invert();
+		sizePos.applyQuaternion(sizeRot);
+
 		sprite.localToWorld(sizePos);
 
 		const sbCoord = this.projectToStoryboard(camera, worldPos);

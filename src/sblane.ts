@@ -1,5 +1,5 @@
 import { Object3D, SpriteMaterial, Vector3 } from "three";
-import { degToRad, inverseLerp, lerp } from "three/src/math/MathUtils";
+import { degToRad, inverseLerp } from "three/src/math/MathUtils";
 import { SBSprite } from "./sbable";
 import { SBNote } from "./sbnote";
 import { SBAlpha } from "./sbkeyframe";
@@ -9,7 +9,7 @@ export class SBLane extends Object3D{
 	private readonly noteMaterials: SpriteMaterial[];
 	private readonly receptorSprite: SBSprite;
 
-	startPos: Vector3 = new Vector3(0, 5, 0);
+	startPos: Vector3 = new Vector3(0, 5, -5);
 	endPos: Vector3 = new Vector3(0, 0, 0);
 
 	duration: number = 1000;
@@ -27,6 +27,7 @@ export class SBLane extends Object3D{
 		}
 
 		this.receptorSprite = new SBSprite(noteMaterialsCopy[0]);
+		this.receptorSprite.position.copy(this.endPos);
 		this.add(this.receptorSprite);
 		
 		this.noteMaterials = noteMaterialsCopy;

@@ -29,7 +29,7 @@ export class SceneController{
 		this.background = new BackgroundImage(backgroundTexture);
 
 		this.playfield.position.y = -4;
-		this.playfield.position.z = 1;
+		this.playfield.position.z = -1;
 
 		for(const note of notes){
 			this.playfield.addNote(note.lane, note.chartTime.time, note.chartTime.snap);
@@ -40,6 +40,7 @@ export class SceneController{
 
 	update(time: number){
 		updateAnimations(time);
+		this.playfield.rotation.y = time / 1000 * Math.PI;
 		this.playfield.updateNotePositions(time);
 	}
 }
