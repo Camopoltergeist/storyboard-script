@@ -1,12 +1,13 @@
-import { SpriteMaterial, Vector3 } from "three";
+import { Object3D, SpriteMaterial, Vector3 } from "three";
 import { degToRad, inverseLerp, lerp } from "three/src/math/MathUtils";
 import { SBSprite } from "./sbable";
 import { SBNote } from "./sbnote";
 import { SBAlpha } from "./sbkeyframe";
 
-export class SBLane extends SBSprite{
+export class SBLane extends Object3D{
 	private readonly notes: SBNote[];
 	private readonly noteMaterials: SpriteMaterial[];
+	private readonly receptorSprite: SBSprite;
 
 	startPos: Vector3 = new Vector3(0, 5, 0);
 	endPos: Vector3 = new Vector3(0, 0, 0);
@@ -15,6 +16,8 @@ export class SBLane extends SBSprite{
 	fadeInTime: number = 100;
 
 	constructor(noteRotation: number, noteMaterials: SpriteMaterial[]){
+		super();
+
 		const noteMaterialsCopy = [];
 		
 		for(const material of noteMaterials){
@@ -22,8 +25,10 @@ export class SBLane extends SBSprite{
 			materialCopy.rotation = degToRad(noteRotation);
 			noteMaterialsCopy.push(materialCopy);
 		}
+
+		this.receptorSprite = new SBSprite(noteMaterialsCopy[0]);
+		this.add(this.receptorSprite);
 		
-		super(noteMaterialsCopy[0]);
 		this.noteMaterials = noteMaterialsCopy;
 		this.notes = [];
 	}
