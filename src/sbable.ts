@@ -4,6 +4,7 @@ import { SBObject } from "./sbobject";
 
 export interface SBAble extends Object3D{
 	generateKeyframes(camera: Camera, time: number): void;
+	clearKeyframes(): void;
 	toSBString(): string;
 	getStartTime(): number;
 	getEndTime(): number;
@@ -33,6 +34,10 @@ export class SBSprite extends Sprite implements SBAble{
 		const kf = SBPositionKeyframe.fromSprite(camera, time, this);
 
 		this.sbObject.posKeyframes.push(kf);
+	}
+
+	clearKeyframes(): void {
+		this.sbObject.clearKeyframes();
 	}
 
 	toSBString(): string{

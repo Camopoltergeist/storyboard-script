@@ -18,6 +18,7 @@ export function* generateStoryboard(tlController: SceneController, options: Gene
 	tlController.scene.traverse((object3d) => {
 		if(object3d instanceof SBSprite){
 			sbAbles.push(object3d);
+			object3d.clearKeyframes();
 		}
 
 		if(object3d instanceof Playfield){

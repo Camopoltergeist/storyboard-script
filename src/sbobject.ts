@@ -12,6 +12,11 @@ export class SBObject{
 		this.center = center;
 	}
 
+	clearKeyframes(){
+		this.posKeyframes.length = 0;
+		this.alphaKeyframes.length = 0;
+	}
+
 	toSBString(): string{
 		if(this.posKeyframes.length < 2){
 			return "";

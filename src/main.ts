@@ -53,6 +53,8 @@ function generateListener(options: GenerateOptions){
 	tlClock.stop();
 	renderer.setAnimationLoop(null);
 
+	// Emptying output will prevent the browser from trying to render the entire fucking output string every frame massively improving performance while generating.
+	setOutput("");
 	const sbGen = generateStoryboard(tlController, options);
 
 	let lastProgress = 0;
