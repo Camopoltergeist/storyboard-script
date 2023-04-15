@@ -8,26 +8,25 @@ export class SBPositionKeyframe{
 	readonly rotation: number;
 	readonly scale: number;
 	readonly scaleBoth: boolean;
+	readonly depth: number;
 
-	constructor(time: number, pos: Vector2, rot: number, scale: number, scaleBoth: boolean){
+	constructor(time: number, pos: Vector2, rot: number, scale: number, scaleBoth: boolean, depth: number){
 		this.time = time;
 		this.position = pos;
 		this.rotation = rot;
 		this.scale = scale;
 		this.scaleBoth = scaleBoth;
+		this.depth = depth;
 	}
 
-	private static projectToStoryboard(camera: Camera, point: Vector3): Vector2{
+	private static projectToStoryboard(camera: Camera, point: Vector3): Vector3{
 		const vpMat = camera.projectionMatrix.clone().multiply(camera.matrixWorldInverse);
 
 		// Do projection
 		const projectedPoint = point.clone().applyMatrix4(vpMat);
 
-		// Convert to Vector2
-		const v2ProjectedPoint = new Vector2(projectedPoint.x, projectedPoint.y);
-
 		// Do normalized device coordinate to storyboard coordinate conversion
-		const sbPoint = ndcToSbc(v2ProjectedPoint);
+		const sbPoint = ndcToSbc(projectedPoint);
 
 		return sbPoint;
 	}
@@ -36,10 +35,16 @@ export class SBPositionKeyframe{
 		const sbStart = this.projectToStoryboard(camera, lineStart);
 		const sbEnd = this.projectToStoryboard(camera, lineEnd);
 
-		const scale = sbStart.distanceTo(sbEnd) / lineTextureLength;
-		const rotation = sbEnd.sub(sbStart).angle();
+		const v2Start = new Vector2(sbStart.x, sbStart.y);
+		const v2End = new Vector2(sbEnd.x, sbEnd.y);
 
-		return new SBPositionKeyframe(time, sbStart, rotation, scale, false);
+		const scale = v2Start.distanceTo(v2End) / lineTextureLength;
+		const rotation = v2End.sub(v2Start).angle();
+
+		const lineMiddle = lineStart.clone().lerpVectors(lineStart, lineEnd, 0.5);
+		const sbMiddle = this.projectToStoryboard(camera, lineMiddle);
+
+		return new SBPositionKeyframe(time, v2Start, rotation, scale, false, sbMiddle.z);
 	}
 	
 	static fromSprite(camera: Camera, time: number, sprite: SBSprite){
@@ -57,12 +62,15 @@ export class SBPositionKeyframe{
 		const sbCoord = this.projectToStoryboard(camera, worldPos);
 		const sbSizeCoord = this.projectToStoryboard(camera, sizePos);
 
-		const sizeDistance = sbCoord.distanceTo(sbSizeCoord);
+		const v2Coord = new Vector2(sbCoord.x, sbCoord.y);
+		const v2SizeCoord = new Vector2(sbSizeCoord.x, sbSizeCoord.y);
+
+		const sizeDistance = v2Coord.distanceTo(v2SizeCoord);
 
 		const scale = sizeDistance / sprite.textureSize.x * 2;
 		const rotation = sprite.material.rotation;
 
-		return new SBPositionKeyframe(time, sbCoord, rotation, scale, true);
+		return new SBPositionKeyframe(time, v2Coord, rotation, scale, true, sbCoord.z);
 	}
 
 	toSBString(nextKeyframe: SBPositionKeyframe): string{
@@ -109,11 +117,11 @@ export const sbWidth = sbAspectRatio * sbHeight;
 export const sbLeft = (640 - sbWidth) / 2;
 
 // Normalized device coordinates to Storyboard coordinates
-function ndcToSbc(input: Vector2): Vector2{
+function ndcToSbc(input: Vector3): Vector3{
 	const x = (input.x + 1) / 2 * sbWidth + sbLeft;
 	const y = (1 - (input.y + 1) / 2) * sbHeight;
 
-	return new Vector2(x, y);
+	return new Vector3(x, y, input.z);
 }
 
 function checkThreshold(a: number, b: number, t: number){
