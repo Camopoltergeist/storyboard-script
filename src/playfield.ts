@@ -4,7 +4,25 @@ import { SBLane } from "./sblane";
 export class Playfield extends Object3D {
 	private readonly lanes: SBLane[];
 
-	constructor(noteMaterials: SpriteMaterial[], laneWidth = 0.9){
+	set width(value: number) {
+		const totalWidth = value * this.lanes.length;
+		const halfWidth = totalWidth / 2;
+
+		for (let i = 0; i < this.lanes.length; i++) {
+			const lane = this.lanes[i];
+
+			lane.position.x = -halfWidth + i * value + value / 2;
+			this.add(lane);
+		}
+	}
+
+	set length(value: number) {
+		for (const lane of this.lanes) {
+			lane.length = value;
+		}
+	}
+
+	constructor(noteMaterials: SpriteMaterial[]){
 		super();
 
 		this.lanes = [
@@ -14,15 +32,7 @@ export class Playfield extends Object3D {
 			new SBLane(180, noteMaterials),
 		];
 
-		const totalWidth = laneWidth * this.lanes.length;
-		const halfWidth = totalWidth / 2;
-
-		for(let i = 0; i < this.lanes.length; i++){
-			const lane = this.lanes[i];
-
-			lane.position.x = -halfWidth + i * laneWidth + laneWidth / 2;
-			this.add(lane);
-		}
+		this.width = 0.9;
 	}
 
 	addNote(lane: number, time: number, snap: number){

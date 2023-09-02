@@ -9,8 +9,9 @@ export class SBLane extends Object3D{
 	private readonly noteMaterials: SpriteMaterial[];
 	private readonly receptorSprite: SBSprite;
 
-	startPos: Vector3 = new Vector3(0, 5, 0);
+	startPos: Vector3 = new Vector3(0, 1, 0);
 	endPos: Vector3 = new Vector3(0, 0, 0);
+	length: number = 5;
 
 	duration: number = 1000;
 	fadeInTime: number = 100;
@@ -53,7 +54,8 @@ export class SBLane extends Object3D{
 
 	private getNotePosition(trackPos: number): Vector3{
 		const pos = this.endPos.clone();
-		pos.lerp(this.startPos, trackPos);
+		const lengthPos = this.startPos.clone().multiplyScalar(this.length);
+		pos.lerp(lengthPos, trackPos);
 
 		return pos;
 	}
