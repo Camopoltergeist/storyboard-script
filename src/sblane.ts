@@ -9,7 +9,7 @@ export class SBLane extends Object3D{
 	private readonly noteMaterials: SpriteMaterial[];
 	private readonly receptorSprite: SBSprite;
 
-	startPos: Vector3 = new Vector3(0, 5, -5);
+	startPos: Vector3 = new Vector3(0, 5, 0);
 	endPos: Vector3 = new Vector3(0, 0, 0);
 
 	duration: number = 1000;
