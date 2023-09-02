@@ -64,7 +64,7 @@ export class BackgroundImage{
 			this.camera.top = -halfAspect;
 			this.camera.bottom = halfAspect;
 			
-			width = this.aspect * 2;
+			width = this.inverseAspect * 2;
 			height = 2;
 		}
 		
