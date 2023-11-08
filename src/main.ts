@@ -56,8 +56,6 @@ loadNoteTextures().then(async (textures) => {
 
 	resizeObserver.observe(renderer.domElement, { box: "device-pixel-content-box" });
 
-	audioPlayer.play();
-	tlClock.start();
 	renderer.setAnimationLoop(animationLoop);
 });
 
