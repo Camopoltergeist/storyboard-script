@@ -142,6 +142,11 @@
 				height: 40px;
 				margin: 0;
 			}
+
+			#volume{
+				display: block;
+				width: 100%;
+			}
 		</style>
 	</head>
 
@@ -156,6 +161,9 @@
 					<div class="optionItem"><label for="useVariableCompression">Use variables to reduce filesize</label><input class="checkbox" type="checkbox" id="useVariableCompression" checked></div>
 					<div class="optionItem"><button id="generateButton">Generate Storyboard</button></div>
 					<div class="optionItem"><div id="progressBar"></div></div>
+					<div class="optionItem">
+						<input type="range" id="volume" min="0" max="1" step="0.01">
+					</div>
 				</div>
 				<div class="dockItem" id="outputContainer">
 					<div id="storyboardOutput"></div>

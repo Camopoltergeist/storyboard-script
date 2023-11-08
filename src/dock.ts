@@ -12,6 +12,7 @@ const timelineContainerElement = document.getElementById("timelineDisplayContain
 const skipToStartButton = document.getElementById("skipToStartButton") as HTMLButtonElement | null;
 const pauseButton = document.getElementById("pauseButton") as HTMLButtonElement | null;
 const playButton = document.getElementById("playButton") as HTMLButtonElement | null;
+const volumeSlider = document.getElementById("volume") as HTMLInputElement | null;
 
 if(cullKeyframesElement === null ||
 	useVariableCompressionElement === null ||
@@ -26,7 +27,8 @@ if(cullKeyframesElement === null ||
 	timelineContainerElement === null ||
 	skipToStartButton === null ||
 	pauseButton === null ||
-	playButton === null
+	playButton === null ||
+	volumeSlider === null
 	){
 	throw new Error("Could not find option elements in document!");
 }
@@ -95,7 +97,7 @@ const defaultOptions: GenerateOptions = {
 	useVariableCompression: true,
 	startTime: 0,
 	endTime: 0,
-	frameRate: 15
+	frameRate: 15,
 };
 
 function loadOptions() {
@@ -117,6 +119,10 @@ function loadOptions() {
 	(startTimeElement as HTMLInputElement).value = String(assignedOptions.startTime);
 	(endTimeElement as HTMLInputElement).value = String(assignedOptions.endTime);
 	(frameRateElement as HTMLInputElement).value = String(assignedOptions.frameRate);
+
+	const volumeString = localStorage.getItem("volume") ?? "0.7";
+
+	(volumeSlider as HTMLInputElement).value = String(volumeString);
 }
 
 function saveOptions(options: GenerateOptions){
@@ -174,4 +180,20 @@ export function setPauseListener(listener: () => void){
 export function setPlayListener(listener: () => void){
 	playListener = listener;
 	(playButton as HTMLButtonElement).addEventListener("click", playListener);
+}
+
+let volumeListener: (volume: number) => void;
+
+function volumeListenerWrapper() {
+	const volumeString = (volumeSlider as HTMLInputElement).value;
+	const volume = Number(volumeString);
+
+	localStorage.setItem("volume", volumeString);
+
+	volumeListener(volume);
+}
+
+export function setVolumeListener(listener: (volume: number) => void) {
+	volumeListener = listener;
+	(volumeSlider as HTMLInputElement).addEventListener("input", volumeListenerWrapper);
 }
