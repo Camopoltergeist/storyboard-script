@@ -22,6 +22,12 @@ export class Playfield extends Object3D {
 		}
 	}
 
+	set duration(value: number) {
+		for (const lane of this.lanes) {
+			lane.duration = value;
+		}
+	}
+
 	constructor(noteMaterials: SpriteMaterial[]){
 		super();
 
@@ -33,6 +39,7 @@ export class Playfield extends Object3D {
 		];
 
 		this.width = 0.9;
+		this.duration = 1000;
 	}
 
 	addNote(lane: number, time: number, snap: number){
