@@ -80,7 +80,6 @@ function generateListener(options: GenerateOptions){
 			setProgressBar(1);
 			enableOptions();
 			
-			tlClock.start();
 			renderer.setAnimationLoop(animationLoop);
 			return;
 		}
