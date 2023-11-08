@@ -28,7 +28,7 @@ export class SBLane extends Object3D{
 		}
 
 		this.receptorSprite = new SBSprite(noteMaterialsCopy[0]);
-		this.receptorSprite.position.copy(this.endPos);
+		this.receptorSprite.position.copy(this.endPos).multiplyScalar(this.length);
 		this.add(this.receptorSprite);
 		
 		this.noteMaterials = noteMaterialsCopy;

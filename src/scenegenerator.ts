@@ -14,7 +14,6 @@ export function generateScene(noteMaterials: SpriteMaterial[]): Scene {
 	const scene = new Scene();
 
 	const playfield = createPlayfield(noteMaterials, 0, lastBeat);
-
 	scene.add(playfield);
 
 	return scene;

@@ -2,7 +2,7 @@ import { Camera, LineSegments, Mesh, Vector3 } from "three";
 import { SBPositionKeyframe } from "./sbkeyframe";
 import { SBObject } from "./sbobject";
 
-export class SBMesh{
+export class SBMesh {
 	readonly mesh: Mesh | LineSegments;
 	readonly children: SBObject[] = [];
 
