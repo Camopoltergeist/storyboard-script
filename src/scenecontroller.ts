@@ -6,7 +6,6 @@ import { generateScene, getTimingPoints } from "./scenegenerator";
 import { Playfield } from "./playfield";
 import { TimingPoint } from "./timing";
 
-
 export class SceneController{
 	readonly scene: Scene;
 	readonly camera: PerspectiveCamera;
@@ -14,7 +13,7 @@ export class SceneController{
 	readonly background: BackgroundImage;
 	readonly timingPoints: TimingPoint[];
 
-	constructor(noteMaterials: SpriteMaterial[], backgroundTexture: Texture){
+	constructor(noteMaterials: SpriteMaterial[], backgroundTexture: Texture) {
 		this.scene = generateScene(noteMaterials);
 		this.camera = new PerspectiveCamera(57, 16 / 9, 0.01, 1000);
 

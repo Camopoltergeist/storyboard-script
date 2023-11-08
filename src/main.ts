@@ -8,7 +8,18 @@ import { SceneController } from "./scenecontroller";
 import { TimelineClock } from "./clock";
 import { BackgroundImage } from "./backgroundimage";
 
+import audioFile from "./resources/testaudio.ogg";
+
 const mainCanvas = document.getElementById("mainCanvas") as HTMLCanvasElement | null;
+
+const audioPlayer = new Audio(audioFile);
+
+function waitForAudioLoad() {
+	return new Promise((resolve, reject) => {
+		audioPlayer.onloadeddata = resolve;
+		audioPlayer.onerror = reject;
+	});
+}
 
 if(mainCanvas === null){
 	throw new Error("Could not find mainCanvas in document!");
@@ -39,11 +50,13 @@ const tlClock = new TimelineClock();
 loadNoteTextures().then(async (textures) => {
 	const noteMaterials = createNoteMaterials(textures);
 	const bgTexture = await loadBgTexture();
+	await waitForAudioLoad();
 
 	tlController = new SceneController(noteMaterials, bgTexture);
 
 	resizeObserver.observe(renderer.domElement, { box: "device-pixel-content-box" });
 
+	audioPlayer.play();
 	tlClock.start();
 	renderer.setAnimationLoop(animationLoop);
 });
@@ -89,18 +102,23 @@ function generateListener(options: GenerateOptions){
 
 function timelineSeekListener(time: number){
 	tlClock.time = time;
+	audioPlayer.currentTime = time / 1000;
 }
 
 function skipToStartListener(){
 	tlClock.reset();
+	audioPlayer.pause();
+	audioPlayer.currentTime = 0;
 }
 
 function pauseListener(){
 	tlClock.stop();
+	audioPlayer.pause();
 }
 
 function playListener(){
 	tlClock.start();
+	audioPlayer.play();
 }
 
 setGenerateListener(generateListener);
