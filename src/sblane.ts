@@ -3,6 +3,7 @@ import { degToRad, inverseLerp } from "three/src/math/MathUtils";
 import { SBSprite } from "./sbable";
 import { SBNote } from "./sbnote";
 import { SBAlpha } from "./sbkeyframe";
+import { FrameState } from "./scenecontroller";
 
 export class SBLane extends Object3D{
 	private readonly notes: SBNote[];
@@ -60,13 +61,13 @@ export class SBLane extends Object3D{
 		return pos;
 	}
 
-	updateNotes(time: number){
+	updateNotes(frameState: FrameState){
 		for(const note of this.notes){
-			this.updateNoteVisibility(time, note);
+			this.updateNoteVisibility(frameState.time, note);
 
-			this.updateNoteTransparency(time, note);
+			this.updateNoteTransparency(frameState.time, note);
 
-			const trackPos = this.calculateTrackPosition(time, note.time);
+			const trackPos = this.calculateTrackPosition(frameState.time, note.time);
 			const nextPos = this.getNotePosition(trackPos);
 
 			note.position.copy(nextPos);

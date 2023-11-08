@@ -54,4 +54,8 @@ function parseChart() {
 	lastBeat = notes[notes.length - 1].chartTime.beat + 1;
 }
 
+export function getTimingPoints(): TimingPoint[] {
+	return timingPoints;
+}
+
 parseChart();

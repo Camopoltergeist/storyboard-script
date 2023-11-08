@@ -1,5 +1,6 @@
 import { Object3D, SpriteMaterial } from "three";
 import { SBLane } from "./sblane";
+import { FrameState } from "./scenecontroller";
 
 export class Playfield extends Object3D {
 	private readonly lanes: SBLane[];
@@ -46,9 +47,9 @@ export class Playfield extends Object3D {
 		this.lanes[lane].addNote(time, snap);
 	}
 
-	updateNotePositions(time: number){
+	updateNotePositions(frameState: FrameState){
 		for(const lane of this.lanes){
-			lane.updateNotes(time);
+			lane.updateNotes(frameState);
 		}
 	}
 }
