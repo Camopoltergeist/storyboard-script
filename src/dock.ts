@@ -101,14 +101,14 @@ const defaultOptions: GenerateOptions = {
 };
 
 function loadOptions() {
-	const optionsString = localStorage.getItem("generateOptions") as any;
+	const optionsString = localStorage.getItem("generateOptions");
 	
 	let options: Partial<GenerateOptions>;
 
-	try{
+	if (optionsString !== null) {
 		options = JSON.parse(optionsString);
 	}
-	catch(e){
+	else {
 		options = {};
 	}
 
