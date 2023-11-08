@@ -53,7 +53,7 @@ export class TimingPoint {
 	getBeatT(currentTime: number){
 		const timeDiff = currentTime - this.time;
 
-		return timeDiff % this.beatLength;
+		return (timeDiff % this.beatLength) / this.beatLength;
 	}
 
 	getMeasureT(currentTime: number){

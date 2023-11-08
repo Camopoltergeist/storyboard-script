@@ -1,5 +1,5 @@
 import { Object3D, SpriteMaterial, Vector3 } from "three";
-import { degToRad, inverseLerp } from "three/src/math/MathUtils";
+import { degToRad, inverseLerp, lerp } from "three/src/math/MathUtils";
 import { SBSprite } from "./sbable";
 import { SBNote } from "./sbnote";
 import { SBAlpha } from "./sbkeyframe";
@@ -9,6 +9,8 @@ export class SBLane extends Object3D{
 	private readonly notes: SBNote[];
 	private readonly noteMaterials: SpriteMaterial[];
 	private readonly receptorSprite: SBSprite;
+
+	private readonly baseNoteRotation: number;
 
 	startPos: Vector3 = new Vector3(0, 1, 0);
 	endPos: Vector3 = new Vector3(0, 0, 0);
@@ -21,14 +23,17 @@ export class SBLane extends Object3D{
 		super();
 
 		const noteMaterialsCopy = [];
+
+		this.baseNoteRotation = noteRotation;
 		
 		for(const material of noteMaterials){
 			const materialCopy = material.clone();
-			materialCopy.rotation = degToRad(noteRotation);
+			// materialCopy.rotation = degToRad(noteRotation);
 			noteMaterialsCopy.push(materialCopy);
 		}
 
 		this.receptorSprite = new SBSprite(noteMaterialsCopy[0]);
+		this.receptorSprite.material.rotation = degToRad(this.baseNoteRotation)
 		this.receptorSprite.position.copy(this.endPos).multiplyScalar(this.length);
 		this.add(this.receptorSprite);
 		
@@ -37,7 +42,7 @@ export class SBLane extends Object3D{
 	}
 
 	addNote(time: number, snap: number){
-		const noteSprite = new SBNote(this.noteMaterials[snap], time, this.duration, this);
+		const noteSprite = new SBNote(this.noteMaterials[snap], this.baseNoteRotation, time, this.duration, this);
 
 		this.setNoteAlphaKeyframes(noteSprite);
 		this.notes.push(noteSprite);
@@ -61,7 +66,7 @@ export class SBLane extends Object3D{
 		return pos;
 	}
 
-	updateNotes(frameState: FrameState){
+	updateNotes(frameState: FrameState) {
 		for(const note of this.notes){
 			this.updateNoteVisibility(frameState.time, note);
 
@@ -71,6 +76,11 @@ export class SBLane extends Object3D{
 			const nextPos = this.getNotePosition(trackPos);
 
 			note.position.copy(nextPos);
+
+			const maxRot = 45;
+			const nextRot = lerp(maxRot, 0, Math.min(1, frameState.beatT * 5));
+
+			note.noteRotation = nextRot;
 		}
 	}
 

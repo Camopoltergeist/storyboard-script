@@ -50,14 +50,20 @@ export class SceneController{
 	}
 
 	createFrameState(time: number): FrameState {
+		const timingPoint = this.getCurrentTimingPoint(time);
+
 		return {
 			time,
-			timingPoint: this.getCurrentTimingPoint(time)
+			timingPoint,
+			beatT: timingPoint.getBeatT(time),
+			measureT: timingPoint.getMeasureT(time)
 		}
 	}
 }
 
 export type FrameState = {
 	time: number,
-	timingPoint: TimingPoint
+	timingPoint: TimingPoint,
+	beatT: number,
+	measureT: number,
 };
