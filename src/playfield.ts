@@ -1,6 +1,7 @@
 import { Object3D, SpriteMaterial } from "three";
 import { SBLane } from "./sblane";
 import { FrameState } from "./scenecontroller";
+import { lerp } from "three/src/math/MathUtils";
 
 export class Playfield extends Object3D {
 	private readonly lanes: SBLane[];
@@ -50,6 +51,13 @@ export class Playfield extends Object3D {
 	updateNotePositions(frameState: FrameState){
 		for(const lane of this.lanes){
 			lane.updateNotes(frameState);
+
+			const maxRot = 45;
+			// const nextRot = lerp(maxRot, 0, Math.min(1, frameState.beatT * 5));
+
+			const nextRot = lerp(360, 0, frameState.beatT);
+
+			lane.noteRotation = nextRot;
 		}
 	}
 }

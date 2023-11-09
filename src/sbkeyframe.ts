@@ -198,7 +198,12 @@ export class SBRotation implements Cullable{
 			}
 		}
 
-		return `$r${current.time},${next.time},${current.rotation.toFixed(4)},${nextRotation.toFixed(4)}\n`;
+		// Negate rotations since osu's storyboards rotate in the opposite direction.
+		// Also offset the rotation so they're always in the positive to save some bytes in the file size as minus signs take one byte each.
+		const currentRotation = -(current.rotation - Math.PI * 2 * 2);
+		nextRotation = -(nextRotation - Math.PI * 2 * 2);
+
+		return `$r${current.time},${next.time},${currentRotation.toFixed(4)},${nextRotation.toFixed(4)}\n`;
 	}
 }
 
