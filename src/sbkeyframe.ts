@@ -1,5 +1,5 @@
 import { Camera, Quaternion, Vector2, Vector3 } from "three";
-import { inverseLerp, lerp } from "three/src/math/MathUtils";
+import { degToRad, inverseLerp, lerp } from "three/src/math/MathUtils";
 import { SBSprite } from "./sbable";
 
 export class SBPositionKeyframe{
@@ -164,6 +164,13 @@ export class SBRotation implements Cullable{
 	}
 
 	cullable(previous: SBRotation, next: SBRotation, threshold: number): boolean{
+		// Don't allow culling when rotation between keyframes is over half a rotation.
+		// If this isn't done genSBString can't reliably recongnize rotations which go over the zero point.
+		// TODO: This only partially fixes the issue, low keyframerates will still make it happen
+		if (Math.abs(previous.rotation - this.rotation) > (Math.PI - degToRad(45))) {
+			return false;
+		}
+
 		const t = inverseLerp(previous.time, next.time, this.time);
 		const lerpedRot = lerp(previous.rotation, next.rotation, t);
 
