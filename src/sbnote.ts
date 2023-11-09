@@ -6,18 +6,9 @@ import { degToRad } from "three/src/math/MathUtils";
 export class SBNote extends SBSprite{
 	readonly time: number;
 	readonly parentLane: SBLane | null;
-	private _baseRotation: number = 0;
+	readonly baseRotation: number = 0;
+	
 	private _noteRotation: number = 0;
-
-	get baseRotation(): number {
-		return this._baseRotation;
-	}
-
-	set baseRotation(value: number) {
-		this._baseRotation = value;
-
-		this.updateRotation();
-	}
 
 	get noteRotation(): number {
 		return this._noteRotation;
@@ -30,7 +21,7 @@ export class SBNote extends SBSprite{
 	}
 
 	private updateRotation() {
-		this.material.rotation = degToRad(this._baseRotation + this._noteRotation);
+		this.material.rotation = degToRad(this.baseRotation + this._noteRotation);
 	}
 
 	constructor(material: SpriteMaterial, noteRotation: number, time: number, duration: number, parentLane: SBLane | null){
@@ -40,6 +31,8 @@ export class SBNote extends SBSprite{
 
 		this.time = time;
 		this.parentLane = parentLane;
+
 		this.baseRotation = noteRotation;
+		this.updateRotation();
 	}
 }

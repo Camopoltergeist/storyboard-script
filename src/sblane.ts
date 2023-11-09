@@ -10,7 +10,18 @@ export class SBLane extends Object3D{
 	private readonly noteMaterials: SpriteMaterial[];
 	private readonly receptorSprite: SBSprite;
 
-	private readonly baseNoteRotation: number;
+	readonly baseNoteRotation: number;
+
+	private _noteRotation: number = 0;
+
+	get noteRotation(): number {
+		return this._noteRotation;
+	}
+
+	set noteRotation(value: number) {
+		this._noteRotation = value;
+		this.updateNoteRotations();
+	}
 
 	startPos: Vector3 = new Vector3(0, 1, 0);
 	endPos: Vector3 = new Vector3(0, 0, 0);
@@ -39,6 +50,14 @@ export class SBLane extends Object3D{
 		
 		this.noteMaterials = noteMaterialsCopy;
 		this.notes = [];
+	}
+
+	updateNoteRotations() {
+		this.receptorSprite.material.rotation = degToRad(this.baseNoteRotation + this._noteRotation);
+
+		for (const note of this.notes) {
+			note.noteRotation = this._noteRotation;
+		}
 	}
 
 	addNote(time: number, snap: number){
@@ -76,11 +95,6 @@ export class SBLane extends Object3D{
 			const nextPos = this.getNotePosition(trackPos);
 
 			note.position.copy(nextPos);
-
-			const maxRot = 45;
-			const nextRot = lerp(maxRot, 0, Math.min(1, frameState.beatT * 5));
-
-			note.noteRotation = nextRot;
 		}
 	}
 
