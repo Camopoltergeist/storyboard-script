@@ -16,7 +16,11 @@ export class TimelineClock{
 		return performance.now() - this.startTime;
 	}
 
-	start(){
+	start() {
+		if (this.isRunning) {
+			return;
+		}
+
 		this.startTime = performance.now() - this.timeAtStop;
 		this.isRunning = true;
 	}
