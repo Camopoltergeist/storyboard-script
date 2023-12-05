@@ -1,13 +1,24 @@
-import { Camera, LineSegments, Mesh, Vector3 } from "three";
+import { Camera, LineSegments, Mesh, MeshBasicMaterial, Object3D, Vector3 } from "three";
 import { SBPositionKeyframe } from "./sbkeyframe";
 import { SBObject } from "./sbobject";
+import { SBAble } from "./sbable";
 
-export class SBMesh {
+export class SBMesh extends Object3D implements SBAble {
 	readonly mesh: Mesh | LineSegments;
-	readonly children: SBObject[] = [];
+	readonly sbLines: SBObject[] = [];
+	readonly startTime: number;
+	readonly endTime: number;
 
-	constructor(mesh: Mesh | LineSegments, textureName: string) {
+	constructor(mesh: Mesh | LineSegments, textureName: string, startTime: number = 0, endTime: number = Infinity) {
+		super();
+
 		this.mesh = mesh;
+		this.startTime = startTime;
+		this.endTime = endTime;
+
+		if (this.mesh instanceof Mesh) {
+			(this.mesh.material as MeshBasicMaterial).wireframe = true;
+		}
 
 		const geometry = mesh.geometry;
 		const vertexCount = geometry.index === null ? geometry.attributes.position.count : geometry.index.count;
@@ -17,18 +28,34 @@ export class SBMesh {
 		}
 
 		for(let i = 0; i < vertexCount; i += 2){
-			this.children.push(new SBObject(textureName, false));
+			this.sbLines.push(new SBObject(textureName, false));
 		}
+
+		this.add(mesh);
 	}
 
 	generateKeyframes(camera: Camera, time: number){
-		for(let i = 0; i < this.children.length; i++){
+		for(let i = 0; i < this.sbLines.length; i++){
 			this.generateKeyframe(camera, time, i);
 		}
 	}
 
+	clearKeyframes(): void {
+		for (const line of this.sbLines) {
+			line.clearKeyframes();
+		}
+	}
+
+	getEndTime(): number {
+		return this.endTime;
+	}
+
+	getStartTime(): number {
+		return this.startTime;
+	}
+
 	private generateKeyframe(camera: Camera, time: number, childIndex: number){
-		const child = this.children[childIndex];
+		const child = this.sbLines[childIndex];
 		const geometry = this.mesh.geometry;
 
 		let lineStart: Vector3;
@@ -70,14 +97,14 @@ export class SBMesh {
 		lineStart.applyMatrix4(this.mesh.matrixWorld);
 		lineEnd.applyMatrix4(this.mesh.matrixWorld);
 
-		const kf = SBPositionKeyframe.fromLine(camera, time, lineStart, lineEnd, 1);
+		const kf = SBPositionKeyframe.fromLine(camera, time, lineStart, lineEnd);
 		child.posKeyframes.push(kf);
 	}
 
 	toSBString(): string{
 		let ret = "";
 
-		for(const child of this.children){
+		for(const child of this.sbLines){
 			ret += child.toSBString();
 		}
 

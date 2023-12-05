@@ -1,8 +1,9 @@
-import { Scene, SpriteMaterial } from "three";
+import { BoxGeometry, Mesh, MeshBasicMaterial, Scene, SpriteMaterial } from "three";
 import { Playfield } from "./playfield";
 
 import noteData from "./murasame.json";
 import { ChartTime, TimingPoint } from "./timing";
+import { SBMesh } from "./sbmesh";
 
 type Note = { chartTime: ChartTime, lane: number };
 
@@ -15,6 +16,14 @@ export function generateScene(noteMaterials: SpriteMaterial[]): Scene {
 
 	const playfield = createPlayfield(noteMaterials, 0, lastBeat);
 	scene.add(playfield);
+
+	const boxGeometry = new BoxGeometry();
+	const basicMat = new MeshBasicMaterial();
+	const boxMesh = new Mesh(boxGeometry, basicMat);
+
+	const sbMesh = new SBMesh(boxMesh, "line.png");
+
+	scene.add(sbMesh);
 
 	return scene;
 }

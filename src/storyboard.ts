@@ -1,6 +1,7 @@
 import { GenerateOptions } from "./dock";
 import { Playfield } from "./playfield";
 import { SBAble, SBSprite } from "./sbable";
+import { SBMesh } from "./sbmesh";
 import { SceneController } from "./scenecontroller";
 
 const variableString = `[Variables]
@@ -16,7 +17,7 @@ export function* generateStoryboard(tlController: SceneController, options: Gene
 	const playfields: Playfield[] = [];
 
 	tlController.scene.traverse((object3d) => {
-		if(object3d instanceof SBSprite){
+		if(object3d instanceof SBSprite || object3d instanceof SBMesh){
 			sbAbles.push(object3d);
 			object3d.clearKeyframes();
 		}

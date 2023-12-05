@@ -44,7 +44,9 @@ export class SBPositionKeyframe{
 		const lineMiddle = lineStart.clone().lerpVectors(lineStart, lineEnd, 0.5);
 		const sbMiddle = this.projectToStoryboard(camera, lineMiddle);
 
-		return new SBPositionKeyframe(time, v2Start, rotation, scale, false, sbMiddle.z);
+		// Negate rotation since this broke with other code changes while it was not being used.
+		// TODO: Investigate why rotation has to be negated here
+		return new SBPositionKeyframe(time, v2Start, -rotation, scale, false, sbMiddle.z);
 	}
 	
 	static fromSprite(camera: Camera, time: number, sprite: SBSprite){
